@@ -5,9 +5,9 @@ from src import data, scoring, plots, utils
 
 st.set_page_config(page_title="Sector Risk Analysis", layout="wide")
 
-st.title("Sector Risk Analysis — Streamlit App")
+st.title("Sector Risk Analysis")
 
-st.markdown("This app computes a transparent sector-level risk score (0-100) using price data and a top-down model.")
+st.markdown("This app computes a sector-level risk score (0-100) using price data and a top-down model.")
 
 # Sidebar
 st.sidebar.header("Settings")
@@ -79,7 +79,7 @@ factors.append(("Correlation with SPY", round(b.get("corr_spy", 0), 3), scoring.
 factors.append(("Volume growth YoY (approx)", round(b.get("volume_growth", 0) if b.get("volume_growth") is not None else 0, 3), scoring.normalize(b.get("volume_growth", 0) if b.get("volume_growth") is not None else 0, -1.0, 2.0, invert=False), 0.20 * (1/2)))
 
 # Fundamentals
-fund_score = result["breakdown"]["fundamental"]
+fund_score = result["breakdown"].get("fundamentals", 0.0)
 factors.append(("Fundamentals baseline (cyclical/defensive + top-down)", round(fund_score, 2), fund_score, 0.10))
 
 df_table = pd.DataFrame(factors, columns=["Factor", "Raw Value", "Normalized (0-100)", "Category Weight Portion"])

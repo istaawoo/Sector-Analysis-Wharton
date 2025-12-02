@@ -30,12 +30,15 @@ def fetch_etf_info(ticker: str) -> dict:
     info["longName"] = info_raw.get("longName") or info_raw.get("shortName") or ticker
     info["sector"] = info_raw.get("category") or info_raw.get("quoteType") or "ETF"
     info["inceptionDate"] = info_raw.get("fundInceptionDate") or info_raw.get("fund_inception_date")
-    info["aum"] = info_raw.get("fundFamily") or info_raw.get("totalAssets") or info_raw.get("assetUnderManagement")
-    info["expenseRatio"] = info_raw.get("fee") or info_raw.get("expenseRatio") or info_raw.get("annualReportExpenseRatio")
+    info["aum"] = info_raw.get("totalAssets") or info_raw.get("assets") or None
+    info["expenseRatio"] = info_raw.get("expenseRatio") or info_raw.get("managementFee") or None
     # fallback to fast_info
     try:
         fi = tk.fast_info
-        info.setdefault("aamc", fi.get("lastPrice"))
+        # fast_info has stable keys like 'lastPrice' and 'total_assets'
+        info.setdefault("lastPrice", fi.get("lastPrice"))
+        if info.get("aum") is None:
+            info["aum"] = fi.get("total_assets") if isinstance(fi, dict) else None
     except Exception:
         pass
     return info
@@ -49,9 +52,13 @@ def prepare_returns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def compute_max_drawdown(prices: pd.Series) -> float:
+    """Return maximum drawdown as a positive fraction (e.g., 0.25 == 25%)."""
+    if prices is None or prices.empty:
+        return 0.0
     roll_max = prices.cummax()
-    drawdown = (prices - roll_max) / roll_max
-    return drawdown.min()  # negative number
+    drawdown = (roll_max - prices) / roll_max
+    max_dd = drawdown.max()
+    return float(max_dd if not pd.isna(max_dd) else 0.0)
 
 
 def get_spy_and_etf(etf: str):
