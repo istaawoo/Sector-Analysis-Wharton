@@ -1,12 +1,14 @@
 import streamlit as st
 import pandas as pd
 from src import data, scoring, plots, utils
+print("APP START — new run")
 
 
-# longer cache (1 hour)
-@st.cache_data(ttl=3600)
+
+# @st.cache_data(ttl=3600)   # temporarily disable cache while debugging cloud-blanks
 def cached_get_spy_and_etf(etf_ticker: str):
     return data.get_spy_and_etf(etf_ticker)
+
 
 
 
