@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from sector_analysis_app.src import data, scoring, plots, utils
+from src import data, scoring, plots, utils
 
 
 @st.cache_data(ttl=300)
@@ -29,7 +29,7 @@ with st.sidebar.expander("Debug / Session"):
 st.sidebar.header("Settings")
 etf_choice = st.sidebar.selectbox("Choose sector ETF", utils.get_etf_list())
 # Let user choose whether to auto-fetch when changing ticker. Default: manual to avoid blocking on interaction.
-auto_fetch = st.sidebar.checkbox("Auto-fetch on ticker change", value=False)
+auto_fetch = st.sidebar.checkbox("Auto-fetch on ticker change", value=True)
 run_button = st.sidebar.button("Refresh Data")
 
 # Initialize session state for data caching and last ticker
@@ -47,12 +47,18 @@ meta = utils.get_etf_metadata(etf_choice)
 st.header(f"{meta['name']} ({etf_choice})")
 st.write(meta["description"])
 
-# Fetch data only when requested (manual refresh) or if auto_fetch enabled and ticker changed
+# Fetch data only when requested:
+# - Always fetch on first app load (last_ticker is None) so the homepage shows the default ticker
+# - Fetch when user clicks Refresh
+# - If auto_fetch enabled, fetch when ticker changes
 do_fetch = False
-if run_button:
+if st.session_state.get("last_ticker") is None:
+    do_fetch = True  # first load: pull default ETF
+elif run_button:
     do_fetch = True
 elif auto_fetch and st.session_state.get("last_ticker") != etf_choice:
     do_fetch = True
+
 
 if do_fetch:
     with st.spinner("Fetching data..."):
@@ -98,9 +104,16 @@ try:
         "topdown_score": None,
     }
 except Exception as e:
-    st.error("Error computing metrics from fetched data.")
+    st.error("Error computing metrics from fetched data (falling back to safe defaults).")
     st.exception(e)
-    st.stop()
+    # safe fallback so UI can continue instead of terminating
+    metrics = {
+        "volatility": {"1y_vol": 0.0, "beta": 1.0, "max_drawdown": 0.0},
+        "performance": {"6m": 0.0, "12m": 0.0, "sharpe": 0.0},
+        "behavior": {"corr_spy": 0.0, "volume_growth": 0.0},
+        "fundamentals": {"cyclical": True, "topdown_score": None},
+    }
+
 
 # Top-down inputs (editable)
 st.subheader("Top-Down Model (Porter / Life Cycle / SWOT)")
@@ -132,7 +145,9 @@ try:
 except Exception as e:
     st.error("Error computing top-down score.")
     st.exception(e)
-    st.stop()
+    # fall back to neutral topdown
+    metrics["fundamentals"]["topdown_score"] = 3.0
+
 
 # Compute actual score
 result = scoring.compute_final_score(metrics)
