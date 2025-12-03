@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-from src import data, scoring, plots, utils
+# Top of sector_analysis_app/app.py
+from .src import data, scoring, plots, utils
 
 
 @st.cache_data(ttl=300)
