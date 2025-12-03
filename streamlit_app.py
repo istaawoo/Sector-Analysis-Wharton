@@ -1,39 +1,34 @@
-﻿import sys
-import os
-
-# ensure the project root and src are importable regardless of how Streamlit runs the app
-root = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, root)                                   # project root
-sys.path.insert(0, os.path.join(root, "sector_analysis_app"))
-sys.path.insert(0, os.path.join(root, "sector_analysis_app", "src"))
-
-
-# streamlit_app.py
-# Thin wrapper for Streamlit Cloud that safely imports the app and shows errors
-
-import os
+﻿# streamlit_app.py — robust loader for Streamlit Cloud
 import sys
+import os
 import traceback
+import importlib
 
-# Add the project root to PYTHONPATH
-root = os.path.dirname(os.path.abspath(__file__))
-if root not in sys.path:
-	sys.path.insert(0, root)
+# Ensure repo root is on sys.path so imports like "from src import ..." or "import sector_analysis_app" work.
+ROOT = os.path.dirname(os.path.abspath(__file__))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+# Also explicitly add package folders (defensive)
+sys.path.insert(0, os.path.join(ROOT, "sector_analysis_app"))
+sys.path.insert(0, os.path.join(ROOT, "sector_analysis_app", "src"))
 
 try:
-	# Import the app module. If it raises, catch and display an error in Streamlit.
-	from sector_analysis_app import app as _app
+    # Try importing the app submodule directly (this avoids ambiguous package-level imports)
+    _app = importlib.import_module("sector_analysis_app.app")
 except Exception as exc:
-	try:
-		import streamlit as st
+    # If import fails, show a clear error in Streamlit (if available) and print traceback
+    try:
+        import streamlit as st
 
-		st.set_page_config(page_title="Sector Analysis — Load Error", layout="centered")
-		st.title("Failed to load Sector Analysis app")
-		st.error("An error occurred while loading the app. See traceback below.")
-		st.exception(exc)
-		st.text("Full traceback:")
-		st.text(traceback.format_exc())
-	except Exception:
-		# If Streamlit isn't available or another error occurs, print to stderr
-		print("Error while importing app:", file=sys.stderr)
-		traceback.print_exc()
+        st.set_page_config(page_title="Sector Analysis — Load Error", layout="centered")
+        st.title("Failed to load Sector Analysis app")
+        st.error("An error occurred while loading the app. See traceback below.")
+        st.exception(exc)
+        st.text("Full traceback:")
+        st.text(traceback.format_exc())
+    except Exception:
+        # If Streamlit isn't importable (unlikely on Cloud), print traceback to stderr
+        print("Error while importing app:", file=sys.stderr)
+        traceback.print_exc()
+    # Re-raise so the container log has the stacktrace as well
+    raise
