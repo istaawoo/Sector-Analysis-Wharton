@@ -3,6 +3,12 @@ import pandas as pd
 from sector_analysis_app.src import data, scoring, plots, utils
 
 
+@st.cache_data(ttl=300)
+def cached_get_spy_and_etf(etf_ticker: str):
+    """Cached wrapper around data.get_spy_and_etf to reduce repeated network calls."""
+    return data.get_spy_and_etf(etf_ticker)
+
+
 st.set_page_config(page_title="Sector Risk Analysis", layout="wide")
 
 st.title("Sector Risk Analysis")
@@ -12,22 +18,68 @@ st.markdown("This app computes a sector-level risk score (0-100) using price dat
 # Sidebar
 st.sidebar.header("Settings")
 etf_choice = st.sidebar.selectbox("Choose sector ETF", utils.get_etf_list())
+# Let user choose whether to auto-fetch when changing ticker. Default: manual to avoid blocking on interaction.
+auto_fetch = st.sidebar.checkbox("Auto-fetch on ticker change", value=False)
 run_button = st.sidebar.button("Refresh Data")
+
+# Initialize session state for data caching and last ticker
+if "data_loaded" not in st.session_state:
+    st.session_state["data_loaded"] = False
+if "etf_df" not in st.session_state:
+    st.session_state["etf_df"] = None
+if "spy_df" not in st.session_state:
+    st.session_state["spy_df"] = None
+if "last_ticker" not in st.session_state:
+    st.session_state["last_ticker"] = None
 
 meta = utils.get_etf_metadata(etf_choice)
 
 st.header(f"{meta['name']} ({etf_choice})")
 st.write(meta["description"])
 
-with st.spinner("Fetching data..."):
-    etf_df, spy_df = data.get_spy_and_etf(etf_choice)
+# Fetch data only when requested (manual refresh) or if auto_fetch enabled and ticker changed
+do_fetch = False
+if run_button:
+    do_fetch = True
+elif auto_fetch and st.session_state.get("last_ticker") != etf_choice:
+    do_fetch = True
+
+if do_fetch:
+    with st.spinner("Fetching data..."):
+        try:
+            etf_df, spy_df = cached_get_spy_and_etf(etf_choice)
+            st.session_state["etf_df"] = etf_df
+            st.session_state["spy_df"] = spy_df
+            st.session_state["data_loaded"] = True
+            st.session_state["last_ticker"] = etf_choice
+        except Exception as e:
+            st.error("Failed to fetch price data for the selected ETF.")
+            st.exception(e)
+            st.session_state["data_loaded"] = False
+            st.stop()
+else:
+    # Use cached session data if available, otherwise leave as None
+    etf_df = st.session_state.get("etf_df")
+    spy_df = st.session_state.get("spy_df")
+
+# If no data has been loaded yet, prompt the user and stop further heavy computation
+if not st.session_state.get("data_loaded", False):
+    st.info("No market data loaded. Click 'Refresh Data' or enable 'Auto-fetch on ticker change' to load data for the selected ETF.")
+    st.stop()
 
 metrics = {}
-metrics["volatility"] = scoring.compute_volatility_factors(etf_df, spy_df)
-metrics["performance"] = scoring.compute_performance_factors(etf_df)
-metrics["behavior"] = scoring.compute_market_behavior(etf_df, spy_df)
-metrics["fundamentals"] = {"cyclical": True if meta.get("category", "Cyclical") == "Cyclical" else False,
-                              "topdown_score": None}
+try:
+    metrics["volatility"] = scoring.compute_volatility_factors(etf_df, spy_df)
+    metrics["performance"] = scoring.compute_performance_factors(etf_df)
+    metrics["behavior"] = scoring.compute_market_behavior(etf_df, spy_df)
+    metrics["fundamentals"] = {
+        "cyclical": True if meta.get("category", "Cyclical") == "Cyclical" else False,
+        "topdown_score": None,
+    }
+except Exception as e:
+    st.error("Error computing metrics from fetched data.")
+    st.exception(e)
+    st.stop()
 
 # Top-down inputs (editable)
 st.subheader("Top-Down Model (Porter / Life Cycle / SWOT)")
@@ -45,14 +97,21 @@ with col3:
     s_opportunity = st.slider("SWOT - Opportunities (1-5)", 1, 5, 3)
     s_threat = st.slider("SWOT - Threats (1-5)", 1, 5, 3)
 
-porter_s = scoring.porter_score(regulation, r_and_d, hhi, switching)
-life_s = scoring.lifecycle_score(lifecycle)
-swot_s = scoring.swot_score(s_strength, s_weakness, s_opportunity, s_threat)
-topdown = scoring.combine_topdown(porter_s, life_s, swot_s)
+try:
+    porter_s = scoring.porter_score(regulation, r_and_d, hhi, switching)
+    life_s = scoring.lifecycle_score(lifecycle)
+    swot_s = scoring.swot_score(s_strength, s_weakness, s_opportunity, s_threat)
+    topdown = scoring.combine_topdown(porter_s, life_s, swot_s)
 
-st.markdown(f"**Top-Down Combined Score (1-5):** {topdown:.2f} — Porter {porter_s:.2f}, LifeCycle {life_s:.2f}, SWOT {swot_s:.2f}")
+    st.markdown(
+        f"**Top-Down Combined Score (1-5):** {topdown:.2f} — Porter {porter_s:.2f}, LifeCycle {life_s:.2f}, SWOT {swot_s:.2f}"
+    )
 
-metrics["fundamentals"]["topdown_score"] = topdown
+    metrics["fundamentals"]["topdown_score"] = topdown
+except Exception as e:
+    st.error("Error computing top-down score.")
+    st.exception(e)
+    st.stop()
 
 # Compute actual score
 result = scoring.compute_final_score(metrics)
@@ -109,10 +168,24 @@ with colB:
 st.subheader("Charts")
 col1, col2 = st.columns(2)
 with col1:
-    st.plotly_chart(plots.price_chart(etf_df, title=f"{etf_choice} — 2y Price"), use_container_width=True)
-    st.plotly_chart(plots.rolling_volatility_chart(etf_df, window=21), use_container_width=True)
+    try:
+        if etf_df is None or etf_df.empty:
+            st.warning("No price data available to display charts.")
+        else:
+            st.plotly_chart(plots.price_chart(etf_df, title=f"{etf_choice} — 2y Price"), use_container_width=True)
+            st.plotly_chart(plots.rolling_volatility_chart(etf_df, window=21), use_container_width=True)
+    except Exception as e:
+        st.error("Failed to render charts on left column.")
+        st.exception(e)
 with col2:
-    st.plotly_chart(plots.drawdown_chart(etf_df, title=f"{etf_choice} — Drawdown"), use_container_width=True)
+    try:
+        if etf_df is None or etf_df.empty:
+            st.warning("No price data available to display charts.")
+        else:
+            st.plotly_chart(plots.drawdown_chart(etf_df, title=f"{etf_choice} — Drawdown"), use_container_width=True)
+    except Exception as e:
+        st.error("Failed to render drawdown chart.")
+        st.exception(e)
 
 st.markdown("---")
 st.write("Methodology: Volatility (40%), Performance (30%), Market Behavior (20%), Fundamentals (10%). Scores are normalized to 0-100 where higher = more risk. Top-down model (Porter/Lifecycle/SWOT) feeds fundamentals.")

@@ -2,6 +2,8 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import concurrent.futures
+import traceback
 
 
 def fetch_price_data(ticker: str, period: str = "2y", interval: str = "1d") -> pd.DataFrame:
@@ -62,7 +64,33 @@ def compute_max_drawdown(prices: pd.Series) -> float:
 
 
 def get_spy_and_etf(etf: str):
-    # Fetch 2 years so we can compute 12-month returns
-    etf_df = fetch_price_data(etf, period="2y")
-    spy_df = fetch_price_data("SPY", period="2y")
-    return etf_df, spy_df
+    """Fetch ETF and SPY price data in parallel with a timeout to avoid hanging.
+
+    Raises RuntimeError on timeout or fetch failure.
+    """
+    timeout_seconds = 10
+    results = {}
+
+    def _fetch(ticker):
+        return fetch_price_data(ticker, period="2y")
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as exe:
+        futures = {
+            exe.submit(_fetch, etf): etf,
+            exe.submit(_fetch, "SPY"): "SPY",
+        }
+        try:
+            for fut in concurrent.futures.as_completed(futures, timeout=timeout_seconds):
+                ticker = futures[fut]
+                try:
+                    results[ticker] = fut.result()
+                except Exception as e:
+                    # capture traceback for debugging
+                    tb = traceback.format_exc()
+                    raise RuntimeError(f"Failed fetching {ticker}: {e}\n{tb}")
+        except concurrent.futures.TimeoutError:
+            raise RuntimeError(f"Timed out fetching price data after {timeout_seconds} seconds")
+
+    if etf not in results or "SPY" not in results:
+        raise RuntimeError("Failed to fetch one or more required tickers")
+    return results[etf], results["SPY"]
