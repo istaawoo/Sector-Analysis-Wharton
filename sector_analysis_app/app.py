@@ -1,4 +1,3 @@
-# Before revisions
 import streamlit as st
 import pandas as pd
 from sector_analysis_app.src import data, scoring, plots, utils
@@ -6,8 +5,11 @@ from sector_analysis_app.src import data, scoring, plots, utils
 
 @st.cache_data(ttl=300)
 def cached_get_spy_and_etf(etf_ticker: str):
-    """Cached wrapper around data.get_spy_and_etf to reduce repeated network calls."""
+    """Cached wrapper around data.get_spy_and_etf to reduce repeated network calls.
+       Returns tuple (etf_df, spy_df) or raises RuntimeError with message.
+    """
     return data.get_spy_and_etf(etf_ticker)
+
 
 
 st.set_page_config(page_title="Sector Risk Analysis", layout="wide")
@@ -15,6 +17,13 @@ st.set_page_config(page_title="Sector Risk Analysis", layout="wide")
 st.title("Sector Risk Analysis")
 
 st.markdown("This app computes a sector-level risk score (0-100) using price data and a top-down model.")
+
+with st.sidebar.expander("Debug / Session"):
+    st.write("data_loaded:", st.session_state.get("data_loaded"))
+    st.write("last_ticker:", st.session_state.get("last_ticker"))
+    st.write("etf_df rows:", None if st.session_state.get("etf_df") is None else len(st.session_state.get("etf_df")))
+    st.write("spy_df rows:", None if st.session_state.get("spy_df") is None else len(st.session_state.get("spy_df")))
+
 
 # Sidebar
 st.sidebar.header("Settings")
@@ -49,19 +58,30 @@ if do_fetch:
     with st.spinner("Fetching data..."):
         try:
             etf_df, spy_df = cached_get_spy_and_etf(etf_choice)
-            st.session_state["etf_df"] = etf_df
-            st.session_state["spy_df"] = spy_df
-            st.session_state["data_loaded"] = True
-            st.session_state["last_ticker"] = etf_choice
+            # sanity checks
+            if etf_df is None or etf_df.empty:
+                st.error(f"Fetched {etf_choice} returned no price rows.")
+                st.session_state["data_loaded"] = False
+            elif spy_df is None or spy_df.empty:
+                st.error("Fetched SPY returned no price rows.")
+                st.session_state["data_loaded"] = False
+            else:
+                st.session_state["etf_df"] = etf_df
+                st.session_state["spy_df"] = spy_df
+                st.session_state["data_loaded"] = True
+                st.session_state["last_ticker"] = etf_choice
         except Exception as e:
-            st.error("Failed to fetch price data for the selected ETF.")
+            # show human-readable error and keep UI alive (don't crash to a blank page)
+            st.error("Failed to fetch price data for the selected ETF. See details below.")
             st.exception(e)
             st.session_state["data_loaded"] = False
-            st.stop()
-else:
-    # Use cached session data if available, otherwise leave as None
+    # ensure local variables are defined after fetch attempt
     etf_df = st.session_state.get("etf_df")
     spy_df = st.session_state.get("spy_df")
+else:
+    etf_df = st.session_state.get("etf_df")
+    spy_df = st.session_state.get("spy_df")
+
 
 # If no data has been loaded yet, prompt the user and stop further heavy computation
 if not st.session_state.get("data_loaded", False):
@@ -173,8 +193,32 @@ with col1:
         if etf_df is None or etf_df.empty:
             st.warning("No price data available to display charts.")
         else:
-            st.plotly_chart(plots.price_chart(etf_df, title=f"{etf_choice} — 2y Price"), use_container_width=True)
-            st.plotly_chart(plots.rolling_volatility_chart(etf_df, window=21), use_container_width=True)
+            # defensive copy and cleanup
+            df = etf_df.copy()
+            # ensure datetime index and sorted
+            try:
+                df.index = pd.to_datetime(df.index)
+            except Exception:
+                # if index can't convert, try resetting index and using a date column if present
+                if "Date" in df.columns:
+                    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+                    df = df.set_index("Date")
+            df = df.sort_index()
+            # drop rows missing the Close column
+            df = df.dropna(subset=["Close"])
+            if df.empty:
+                st.warning("Price data exists but 'Close' column is empty after dropping NaNs.")
+            else:
+                # smaller defensive check: ensure numeric Close
+                df["Close"] = pd.to_numeric(df["Close"], errors="coerce")
+                df = df.dropna(subset=["Close"])
+                if df.empty:
+                    st.warning("Price 'Close' column cannot be coerced to numeric.")
+                else:
+                    # plot price and rolling vol using cleaned df
+                    st.plotly_chart(plots.price_chart(df, title=f"{etf_choice} — 2y Price"), use_container_width=True)
+                    # rolling volatility expects a 'Close' column and percent-change will produce NaNs at start; that's fine
+                    st.plotly_chart(plots.rolling_volatility_chart(df, window=21), use_container_width=True)
     except Exception as e:
         st.error("Failed to render charts on left column.")
         st.exception(e)
@@ -183,10 +227,26 @@ with col2:
         if etf_df is None or etf_df.empty:
             st.warning("No price data available to display charts.")
         else:
-            st.plotly_chart(plots.drawdown_chart(etf_df, title=f"{etf_choice} — Drawdown"), use_container_width=True)
+            # use same defensive cleanup for drawdown chart
+            df2 = etf_df.copy()
+            try:
+                df2.index = pd.to_datetime(df2.index)
+            except Exception:
+                if "Date" in df2.columns:
+                    df2["Date"] = pd.to_datetime(df2["Date"], errors="coerce")
+                    df2 = df2.set_index("Date")
+            df2 = df2.sort_index()
+            df2 = df2.dropna(subset=["Close"])
+            df2["Close"] = pd.to_numeric(df2["Close"], errors="coerce")
+            df2 = df2.dropna(subset=["Close"])
+            if df2.empty:
+                st.warning("Price data exists but 'Close' column is empty after cleanup for drawdown.")
+            else:
+                st.plotly_chart(plots.drawdown_chart(df2, title=f"{etf_choice} — Drawdown"), use_container_width=True)
     except Exception as e:
         st.error("Failed to render drawdown chart.")
         st.exception(e)
+
 
 st.markdown("---")
 st.write("Methodology: Volatility (40%), Performance (30%), Market Behavior (20%), Fundamentals (10%). Scores are normalized to 0-100 where higher = more risk. Top-down model (Porter/Lifecycle/SWOT) feeds fundamentals.")

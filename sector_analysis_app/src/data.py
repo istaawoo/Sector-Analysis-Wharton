@@ -64,33 +64,26 @@ def compute_max_drawdown(prices: pd.Series) -> float:
 
 
 def get_spy_and_etf(etf: str):
-    """Fetch ETF and SPY price data in parallel with a timeout to avoid hanging.
-
-    Raises RuntimeError on timeout or fetch failure.
-    """
-    timeout_seconds = 10
-    results = {}
-
-    def _fetch(ticker):
-        return fetch_price_data(ticker, period="2y")
+    """Fetch ETF and SPY price data in parallel with per-future timeouts and clearer errors."""
+    # give yfinance a bit more time (10-30s depending on environment)
+    timeout_seconds = 30
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=2) as exe:
-        futures = {
-            exe.submit(_fetch, etf): etf,
-            exe.submit(_fetch, "SPY"): "SPY",
-        }
-        try:
-            for fut in concurrent.futures.as_completed(futures, timeout=timeout_seconds):
-                ticker = futures[fut]
-                try:
-                    results[ticker] = fut.result()
-                except Exception as e:
-                    # capture traceback for debugging
-                    tb = traceback.format_exc()
-                    raise RuntimeError(f"Failed fetching {ticker}: {e}\n{tb}")
-        except concurrent.futures.TimeoutError:
-            raise RuntimeError(f"Timed out fetching price data after {timeout_seconds} seconds")
+        fut_etf = exe.submit(fetch_price_data, etf, "2y")
+        fut_spy = exe.submit(fetch_price_data, "SPY", "2y")
 
-    if etf not in results or "SPY" not in results:
-        raise RuntimeError("Failed to fetch one or more required tickers")
-    return results[etf], results["SPY"]
+        # collect results with per-future timeouts so one slow request doesn't kill the other
+        try:
+            etf_df = fut_etf.result(timeout=timeout_seconds)
+        except Exception as e:
+            raise RuntimeError(f"Failed fetching {etf}: {e}")
+
+        try:
+            spy_df = fut_spy.result(timeout=timeout_seconds)
+        except Exception as e:
+            raise RuntimeError(f"Failed fetching SPY: {e}")
+
+    if etf_df is None or spy_df is None:
+        raise RuntimeError("Failed to fetch one or more required tickers (None returned).")
+
+    return etf_df, spy_df
