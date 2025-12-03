@@ -2,20 +2,8 @@
 # Use polling instead of inotify so we don't hit inotify watch limits in the Cloud container.
 fileWatcherType = "poll"
 
-# Optional: blacklist large or irrelevant folders from being watched
+# Blacklist large or irrelevant folders (optional)
 folderWatchBlacklist = ["venv", ".venv", ".git", ".github", "__pycache__", "node_modules"]
 
-# Optional fallback: completely disable filesystem watching
-# watchFileSystem = false
-# .streamlit/config.toml
-[server]
-# Use polling instead of inotify so we don't hit inotify watch limits in the Cloud container.
-# "poll" avoids inotify entirely; it's slightly less efficient but stable on hosted runtimes.
-fileWatcherType = "poll"
-
-# Optional: explicitly blacklist big folders from being watched (helps local dev)
-# Use names that match your repo (venv folders, build artifacts, etc.)
-folderWatchBlacklist = ["venv", ".venv", ".git", ".github", "__pycache__", "node_modules"]
-
-# Optional: completely disable filesystem watching (alternative)
+# Optional: disable filesystem watching entirely (uncomment if needed)
 # watchFileSystem = false
