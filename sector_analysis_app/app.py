@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from src import data, scoring, plots, utils
+from sector_analysis_app.src import data, scoring, plots, utils
 
 
 st.set_page_config(page_title="Sector Risk Analysis", layout="wide")
