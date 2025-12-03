@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
+from io import StringIO
 from src import data, scoring, plots, utils
+
 print("APP START — new run")
 
 
@@ -61,33 +63,62 @@ elif auto_fetch and st.session_state.get("last_ticker") != etf_choice:
     do_fetch = True
 
 
+# --- FETCH (safe for Cloud) ---
 if do_fetch:
     with st.spinner("Fetching data..."):
         try:
-            etf_df, spy_df = cached_get_spy_and_etf(etf_choice)
+            # fetch DataFrames (no caching at this moment)
+            fetched_etf_df, fetched_spy_df = cached_get_spy_and_etf(etf_choice)
+
             # sanity checks
-            if etf_df is None or etf_df.empty:
+            if fetched_etf_df is None or fetched_etf_df.empty:
                 st.error(f"Fetched {etf_choice} returned no price rows.")
                 st.session_state["data_loaded"] = False
-            elif spy_df is None or spy_df.empty:
+                # clear session data to avoid stale partial state
+                st.session_state.pop("etf_csv", None)
+                st.session_state.pop("spy_csv", None)
+            elif fetched_spy_df is None or fetched_spy_df.empty:
                 st.error("Fetched SPY returned no price rows.")
                 st.session_state["data_loaded"] = False
+                st.session_state.pop("etf_csv", None)
+                st.session_state.pop("spy_csv", None)
             else:
-                st.session_state["etf_df"] = etf_df
-                st.session_state["spy_df"] = spy_df
+                # store CSV strings in session_state (safe to serialize)
+                st.session_state["etf_csv"] = fetched_etf_df.to_csv()
+                st.session_state["spy_csv"] = fetched_spy_df.to_csv()
                 st.session_state["data_loaded"] = True
                 st.session_state["last_ticker"] = etf_choice
+
+                # set local dfs for this run
+                etf_df = pd.read_csv(StringIO(st.session_state["etf_csv"]), index_col=0, parse_dates=True)
+                spy_df = pd.read_csv(StringIO(st.session_state["spy_csv"]), index_col=0, parse_dates=True)
+
+                # debug print for server logs
+                print(f"[FETCHED] {etf_choice} rows={len(etf_df)} SPY rows={len(spy_df)}")
         except Exception as e:
-            # show human-readable error and keep UI alive (don't crash to a blank page)
             st.error("Failed to fetch price data for the selected ETF. See details below.")
             st.exception(e)
+            # mark not loaded and clear csv session values to avoid corrupt state
             st.session_state["data_loaded"] = False
-    # ensure local variables are defined after fetch attempt
-    etf_df = st.session_state.get("etf_df")
-    spy_df = st.session_state.get("spy_df")
+            st.session_state.pop("etf_csv", None)
+            st.session_state.pop("spy_csv", None)
+
+    # ensure local variables are defined after fetch attempt (if not set above)
+    if "etf_df" not in locals():
+        etf_csv = st.session_state.get("etf_csv")
+        spy_csv = st.session_state.get("spy_csv")
+        etf_df = pd.read_csv(StringIO(etf_csv), index_col=0, parse_dates=True) if etf_csv else None
+        spy_df = pd.read_csv(StringIO(spy_csv), index_col=0, parse_dates=True) if spy_csv else None
+
 else:
-    etf_df = st.session_state.get("etf_df")
-    spy_df = st.session_state.get("spy_df")
+    # load DFS from safe CSVs stored in session_state
+    etf_csv = st.session_state.get("etf_csv")
+    spy_csv = st.session_state.get("spy_csv")
+    etf_df = pd.read_csv(StringIO(etf_csv), index_col=0, parse_dates=True) if etf_csv else None
+    spy_df = pd.read_csv(StringIO(spy_csv), index_col=0, parse_dates=True) if spy_csv else None
+    # debug print
+    print(f"[LOAD FROM SESSION] etf_df is {'present' if etf_df is not None else 'None'}, spy_df is {'present' if spy_df is not None else 'None'}")
+# --- end fetch block ---
 
 
 # If no data has been loaded yet, prompt the user and stop further heavy computation
