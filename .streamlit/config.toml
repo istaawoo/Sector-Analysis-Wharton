@@ -1,9 +1,4 @@
-﻿[server]
-# Use polling instead of inotify so we don't hit inotify watch limits in the Cloud container.
+[server]
 fileWatcherType = "poll"
-
-# Blacklist large or irrelevant folders (optional)
 folderWatchBlacklist = ["venv", ".venv", ".git", ".github", "__pycache__", "node_modules"]
-
-# Optional: disable filesystem watching entirely (uncomment if needed)
 # watchFileSystem = false
