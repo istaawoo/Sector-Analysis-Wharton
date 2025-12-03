@@ -1,4 +1,14 @@
-﻿# streamlit_app.py
+﻿import sys
+import os
+
+# ensure the project root and src are importable regardless of how Streamlit runs the app
+root = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, root)                                   # project root
+sys.path.insert(0, os.path.join(root, "sector_analysis_app"))
+sys.path.insert(0, os.path.join(root, "sector_analysis_app", "src"))
+
+
+# streamlit_app.py
 # Thin wrapper for Streamlit Cloud that safely imports the app and shows errors
 
 import os

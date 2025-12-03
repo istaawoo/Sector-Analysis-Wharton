@@ -1,15 +1,13 @@
 import streamlit as st
 import pandas as pd
-# Top of sector_analysis_app/app.py
-from .src import data, scoring, plots, utils
+from src import data, scoring, plots, utils
 
 
-@st.cache_data(ttl=300)
+# longer cache (1 hour)
+@st.cache_data(ttl=3600)
 def cached_get_spy_and_etf(etf_ticker: str):
-    """Cached wrapper around data.get_spy_and_etf to reduce repeated network calls.
-       Returns tuple (etf_df, spy_df) or raises RuntimeError with message.
-    """
     return data.get_spy_and_etf(etf_ticker)
+
 
 
 
