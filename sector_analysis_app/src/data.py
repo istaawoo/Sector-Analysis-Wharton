@@ -62,32 +62,43 @@ def compute_max_drawdown(prices: pd.Series) -> float:
     max_dd = drawdown.max()
     return float(max_dd if not pd.isna(max_dd) else 0.0)
 
-
 import time
+import random
+import requests
 import concurrent.futures
 import traceback
-import requests
 
-def get_spy_and_etf(etf: str):
-    """Fetch ETF and SPY price data with retries and clearer errors.
+def get_spy_and_etf(etf: str, period: str = "2y", interval: str = "1d"):
+    """
+    Fetch ETF and SPY price data with robust retries, jittered exponential backoff,
+    and polite handling of rate limits.
 
     Returns (etf_df, spy_df) or raises RuntimeError.
     """
-    # per-call timeout for each future
-    per_future_timeout = 30
-    # retry settings
-    max_attempts = 3
-    backoff_base = 2.0
+    # per-call timeout for each future/result
+    per_call_timeout = 40
+    max_attempts = 5
+    base_backoff = 2.0
 
     last_exc = None
+
     for attempt in range(1, max_attempts + 1):
         try:
-            with concurrent.futures.ThreadPoolExecutor(max_workers=2) as exe:
-                fut_etf = exe.submit(fetch_price_data, etf, "2y")
-                fut_spy = exe.submit(fetch_price_data, "SPY", "2y")
+            # Strategy: fetch ETF first then SPY shortly after.
+            # Fetch ETF
+            try:
+                etf_df = fetch_price_data(etf, period=period, interval=interval)
+            except Exception as e_etf:
+                raise RuntimeError(f"Failed fetching {etf}: {e_etf}")
 
-                etf_df = fut_etf.result(timeout=per_future_timeout)
-                spy_df = fut_spy.result(timeout=per_future_timeout)
+            # tiny polite pause to avoid simultaneous hammering from same container
+            time.sleep(0.5 + random.random() * 0.5)
+
+            # Fetch SPY
+            try:
+                spy_df = fetch_price_data("SPY", period=period, interval=interval)
+            except Exception as e_spy:
+                raise RuntimeError(f"Failed fetching SPY: {e_spy}")
 
             if etf_df is None or spy_df is None:
                 raise RuntimeError("One of the tickers returned None")
@@ -95,17 +106,19 @@ def get_spy_and_etf(etf: str):
             return etf_df, spy_df
 
         except Exception as e:
-            # Some yfinance failures manifest as requests.exceptions.HTTPError or RuntimeError with message "Too Many Requests"
             last_exc = e
-            # if it's a rate limit from Yahoo, sleep longer
-            sleep_time = backoff_base ** attempt
-            # optional: inspect message for rate-limit keywords
             msg = str(e).lower()
-            if "too many requests" in msg or "rate limit" in msg or isinstance(e, requests.exceptions.HTTPError):
-                # be polite and back off longer
-                sleep_time = max(sleep_time, 10)
-            # Info-level print (useful for logs)
-            print(f"get_spy_and_etf: attempt {attempt} failed: {e}. backing off {sleep_time}s...")
+            # base backoff, then jitter
+            sleep_time = base_backoff ** attempt
+            # if we detect rate-limit text, increase backoff
+            if "too many requests" in msg or "rate limit" in msg or "429" in msg:
+                sleep_time = max(sleep_time, 10 + random.random() * 5)
+            else:
+                # add modest jitter so multiple processes don't retry in lockstep
+                sleep_time = sleep_time + random.random() * 2.0
+
+            # logging (server logs)
+            print(f"get_spy_and_etf: attempt {attempt} failed: {e}. backing off ~{sleep_time:.1f}s...", flush=True)
             time.sleep(sleep_time)
             continue
 

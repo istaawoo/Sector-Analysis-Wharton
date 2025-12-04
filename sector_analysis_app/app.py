@@ -26,10 +26,16 @@ except Exception:
         ) from exc
 
 
-# Temporary: do not use @st.cache_data while debugging Cloud blanking. Re-enable later if desired.
-def cached_get_spy_and_etf(etf_ticker: str):
-    """Wrapper around data.get_spy_and_etf (no caching while debugging)."""
-    return data.get_spy_and_etf(etf_ticker)
+# at top of file: ensure streamlit imported as st (already is)
+@st.cache_data(ttl=86400, show_spinner=False)
+def cached_get_spy_and_etf_csv(etf_ticker: str):
+    """
+    Cached wrapper — returns tuple of CSV strings (etf_csv, spy_csv).
+    TTL: 24 hours (86400 seconds)
+    """
+    etf_df, spy_df = data.get_spy_and_etf(etf_ticker)
+    return etf_df.to_csv(index=True), spy_df.to_csv(index=True)
+
 
 
 def _read_df_from_session(key: str):
@@ -95,36 +101,26 @@ def main():
     if do_fetch:
         with st.spinner("Fetching data..."):
             try:
-                fetched_etf_df, fetched_spy_df = cached_get_spy_and_etf(etf_choice)
+                etf_csv, spy_csv = cached_get_spy_and_etf_csv(etf_choice)
+                # store CSVs in session (already compatible with your session approach)
+                st.session_state["etf_csv"] = etf_csv
+                st.session_state["spy_csv"] = spy_csv
+                st.session_state["data_loaded"] = True
+                st.session_state["last_ticker"] = etf_choice
 
-                if fetched_etf_df is None or fetched_etf_df.empty:
-                    st.error(f"Fetched {etf_choice} returned no price rows.")
-                    st.session_state["data_loaded"] = False
-                    st.session_state.pop("etf_csv", None)
-                    st.session_state.pop("spy_csv", None)
-                elif fetched_spy_df is None or fetched_spy_df.empty:
-                    st.error("Fetched SPY returned no price rows.")
-                    st.session_state["data_loaded"] = False
-                    st.session_state.pop("etf_csv", None)
-                    st.session_state.pop("spy_csv", None)
-                else:
-                    # store as CSV strings in session (serializable & robust)
-                    _store_df_in_session(fetched_etf_df, "etf_csv")
-                    _store_df_in_session(fetched_spy_df, "spy_csv")
-                    st.session_state["data_loaded"] = True
-                    st.session_state["last_ticker"] = etf_choice
+                etf_df = pd.read_csv(StringIO(etf_csv), index_col=0, parse_dates=True)
+                spy_df = pd.read_csv(StringIO(spy_csv), index_col=0, parse_dates=True)
 
-                    # local variables for this run
-                    etf_df = _read_df_from_session("etf_csv")
-                    spy_df = _read_df_from_session("spy_csv")
-                    print(f"[FETCHED] {etf_choice} rows={len(etf_df)} SPY rows={len(spy_df)}", flush=True)
-
+                print(f"[FETCHED/CACHED] {etf_choice} rows={len(etf_df)} SPY rows={len(spy_df)}", flush=True)
             except Exception as e:
                 st.error("Failed to fetch price data for the selected ETF. See details below.")
                 st.exception(e)
                 st.session_state["data_loaded"] = False
                 st.session_state.pop("etf_csv", None)
                 st.session_state.pop("spy_csv", None)
+
+
+                
         # ensure local variables defined
         if "etf_df" not in locals():
             etf_df = _read_df_from_session("etf_csv")
