@@ -74,44 +74,67 @@ def main():
         st.write("etf_csv len:", len(etf_csv) if etf_csv else None)
         st.write("spy_csv len:", len(spy_csv) if spy_csv else None)
 
-    # Sidebar controls
+        # Sidebar controls (use explicit widget keys so Streamlit keeps state stable)
     st.sidebar.header("Settings")
-    etf_choice = st.sidebar.selectbox("Choose sector ETF", utils.get_etf_list())
-    auto_fetch = st.sidebar.checkbox("Auto-fetch on ticker change", value=True)
-    run_button = st.sidebar.button("Refresh Data")
+    etf_list = utils.get_etf_list()
+    # choose initial index from session last_ticker if present, else first ETF
+    default_etf = st.session_state.get("last_ticker") or etf_list[0]
+    try:
+        default_index = etf_list.index(default_etf)
+    except ValueError:
+        default_index = 0
+
+    # Widget keys: keep these stable across reruns
+    etf_choice = st.sidebar.selectbox(
+        "Choose sector ETF",
+        etf_list,
+        index=default_index,
+        key="etf_choice",
+    )
+
+    auto_fetch = st.sidebar.checkbox("Auto-fetch on ticker change", value=True, key="auto_fetch")
+    run_button = st.sidebar.button("Refresh Data", key="refresh")
 
     # initialize session keys safely
     st.session_state.setdefault("data_loaded", False)
     st.session_state.setdefault("last_ticker", None)
 
-    meta = utils.get_etf_metadata(etf_choice)
-    st.header(f"{meta['name']} ({etf_choice})")
+    # copy local meta & header using the widget value from session to avoid mismatch
+    meta = utils.get_etf_metadata(st.session_state.get("etf_choice", etf_choice))
+    st.header(f"{meta['name']} ({st.session_state.get('etf_choice', etf_choice)})")
     st.write(meta["description"])
 
     # Decide whether to fetch:
     do_fetch = False
-    if st.session_state.get("last_ticker") is None:
-        do_fetch = True  # first load
+    last = st.session_state.get("last_ticker")
+
+    # First load behavior: fetch if we have no CSV cached in session.
+    if last is None and not st.session_state.get("etf_csv"):
+        do_fetch = True
+    # Manual refresh always fetch
     elif run_button:
         do_fetch = True
-    elif auto_fetch and st.session_state.get("last_ticker") != etf_choice:
+    # Auto-fetch only when user changed the ticker *intentionally* (compare session values)
+    elif st.session_state.get("auto_fetch") and last != st.session_state.get("etf_choice"):
         do_fetch = True
 
     # Fetching block (safe serialization to CSV strings)
     if do_fetch:
         with st.spinner("Fetching data..."):
             try:
-                etf_csv, spy_csv = cached_get_spy_and_etf_csv(etf_choice)
+                # use cached CSV wrapper (long TTL) — returns (etf_csv, spy_csv)
+                etf_csv, spy_csv = cached_get_spy_and_etf_csv(st.session_state.get("etf_choice", etf_choice))
                 # store CSVs in session (already compatible with your session approach)
                 st.session_state["etf_csv"] = etf_csv
                 st.session_state["spy_csv"] = spy_csv
                 st.session_state["data_loaded"] = True
-                st.session_state["last_ticker"] = etf_choice
+                # set last_ticker to the session widget value (stable)
+                st.session_state["last_ticker"] = st.session_state.get("etf_choice", etf_choice)
 
                 etf_df = pd.read_csv(StringIO(etf_csv), index_col=0, parse_dates=True)
                 spy_df = pd.read_csv(StringIO(spy_csv), index_col=0, parse_dates=True)
 
-                print(f"[FETCHED/CACHED] {etf_choice} rows={len(etf_df)} SPY rows={len(spy_df)}", flush=True)
+                print(f"[FETCHED/CACHED] {st.session_state['last_ticker']} rows={len(etf_df)} SPY rows={len(spy_df)}", flush=True)
             except Exception as e:
                 st.error("Failed to fetch price data for the selected ETF. See details below.")
                 st.exception(e)
@@ -119,9 +142,7 @@ def main():
                 st.session_state.pop("etf_csv", None)
                 st.session_state.pop("spy_csv", None)
 
-
-                
-        # ensure local variables defined
+        # ensure local variables defined (fallback)
         if "etf_df" not in locals():
             etf_df = _read_df_from_session("etf_csv")
             spy_df = _read_df_from_session("spy_csv")
