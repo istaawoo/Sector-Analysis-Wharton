@@ -322,19 +322,15 @@ def main():
 
 
 # Run the app inside a global try/except so errors surface instead of blanking
-try:
-    main()
-except Exception as exc:
-    # Ensure Streamlit shows the error instead of a blank screen
+if __name__ == "__main__":
     try:
-        st.set_page_config(page_title="Sector Analysis — Runtime Error", layout="centered")
-        st.title("Sector Analysis — Runtime Error")
-        st.error("An unexpected error occurred while running the app. See details below.")
-        st.exception(exc)
-        st.text(traceback.format_exc())
-    except Exception:
-        # If Streamlit fails, print to stdout/stderr so Cloud logs contain traceback
-        print("Fatal error while running app:", flush=True)
-        print(traceback.format_exc(), flush=True)
-    # re-raise so that container logs are explicit
-    raise
+        main()
+    except Exception as exc:
+        # Keep your existing error handling logic here
+        try:
+            st.set_page_config(page_title="Runtime Error", layout="centered")
+            st.error("An unexpected error occurred.")
+            st.exception(exc)
+        except Exception:
+            print(traceback.format_exc(), flush=True)
+        raise
