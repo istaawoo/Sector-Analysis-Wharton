@@ -1,3 +1,6 @@
+#Add all 11 sectors
+#The ability for it to do the sector analysis for multiple different countries
+
 # sector_analysis_app/app.py
 import traceback
 import sys
