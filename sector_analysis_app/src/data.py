@@ -70,35 +70,24 @@ import traceback
 
 def get_spy_and_etf(etf: str, period: str = "2y", interval: str = "1d"):
     """
-    Fetch ETF and SPY price data with robust retries, jittered exponential backoff,
-    and polite handling of rate limits.
-
-    Returns (etf_df, spy_df) or raises RuntimeError.
+    Fetch ETF and SPY price data with conservative retries.
+    If an obvious rate-limit is detected ("Too Many Requests" / 429), fail-fast
+    so Streamlit shows an error rather than blocking for long retries.
     """
-    # per-call timeout for each future/result
-    per_call_timeout = 40
-    max_attempts = 5
+    per_call_timeout = 30
+    max_attempts = 2            # small number of attempts in Cloud
     base_backoff = 2.0
 
     last_exc = None
 
     for attempt in range(1, max_attempts + 1):
         try:
-            # Strategy: fetch ETF first then SPY shortly after.
-            # Fetch ETF
-            try:
-                etf_df = fetch_price_data(etf, period=period, interval=interval)
-            except Exception as e_etf:
-                raise RuntimeError(f"Failed fetching {etf}: {e_etf}")
-
-            # tiny polite pause to avoid simultaneous hammering from same container
-            time.sleep(0.5 + random.random() * 0.5)
-
+            # Fetch ETF first
+            etf_df = fetch_price_data(etf, period=period, interval=interval)
+            # tiny polite pause
+            time.sleep(0.25)
             # Fetch SPY
-            try:
-                spy_df = fetch_price_data("SPY", period=period, interval=interval)
-            except Exception as e_spy:
-                raise RuntimeError(f"Failed fetching SPY: {e_spy}")
+            spy_df = fetch_price_data("SPY", period=period, interval=interval)
 
             if etf_df is None or spy_df is None:
                 raise RuntimeError("One of the tickers returned None")
@@ -108,17 +97,15 @@ def get_spy_and_etf(etf: str, period: str = "2y", interval: str = "1d"):
         except Exception as e:
             last_exc = e
             msg = str(e).lower()
-            # base backoff, then jitter
-            sleep_time = base_backoff ** attempt
-            # if we detect rate-limit text, increase backoff
-            if "too many requests" in msg or "rate limit" in msg or "429" in msg:
-                sleep_time = max(sleep_time, 10 + random.random() * 5)
-            else:
-                # add modest jitter so multiple processes don't retry in lockstep
-                sleep_time = sleep_time + random.random() * 2.0
 
-            # logging (server logs)
-            print(f"get_spy_and_etf: attempt {attempt} failed: {e}. backing off ~{sleep_time:.1f}s...", flush=True)
+            # If we detect a rate-limit, fail fast (don't sleep long)
+            if "too many requests" in msg or "rate limit" in msg or "429" in msg:
+                print(f"get_spy_and_etf: detected rate-limit on attempt {attempt}: {e}", flush=True)
+                raise RuntimeError(f"Rate-limited when fetching {etf} or SPY: {e}") from e
+
+            # Otherwise do a short backoff and retry (but keep attempts low)
+            sleep_time = base_backoff ** attempt + (0.1 * attempt)
+            print(f"get_spy_and_etf: attempt {attempt} failed: {e}. backing off {sleep_time:.1f}s...", flush=True)
             time.sleep(sleep_time)
             continue
 

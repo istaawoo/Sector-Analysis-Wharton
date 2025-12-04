@@ -62,6 +62,14 @@ def main():
     st.title("Sector Risk Analysis")
     st.markdown("This app computes a sector-level risk score (0-100) using price data and a top-down model.")
 
+        # --- HEARTBEAT (visible and logs) ---
+    hb = st.empty()
+    hb.text(f"Server run started at {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())} UTC")
+
+    # Also print a short server-side "tick" into the container logs for each run
+    print(f"RUN HEARTBEAT: run at {time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime())} UTC", flush=True)
+
+
     # debug panel
     with st.sidebar.expander("Debug / Session"):
         st.write("data_loaded:", st.session_state.get("data_loaded"))
@@ -123,6 +131,7 @@ def main():
         with st.spinner("Fetching data..."):
             try:
                 # use cached CSV wrapper (long TTL) — returns (etf_csv, spy_csv)
+                print(f"START FETCH: ticker={st.session_state.get('etf_choice', etf_choice)} last_ticker={st.session_state.get('last_ticker')} auto_fetch={st.session_state.get('auto_fetch')}", flush=True)
                 etf_csv, spy_csv = cached_get_spy_and_etf_csv(st.session_state.get("etf_choice", etf_choice))
                 # store CSVs in session (already compatible with your session approach)
                 st.session_state["etf_csv"] = etf_csv
