@@ -105,12 +105,12 @@ def get_sector_summary(prism_df):
 
 
 def get_tier(prism_score):
-    """Convert PRISM score to tier label"""
+    """Convert PRISM score to tier label. Adjusted thresholds for flexibility."""
     if pd.isna(prism_score):
         return "Not Scored"
-    elif prism_score >= 70:
+    elif prism_score >= 65:  # Lowered from 70
         return "Overweight"
-    elif prism_score >= 55:
+    elif prism_score >= 45:  # Lowered from 55
         return "Neutral"
     else:
         return "Underweight"
@@ -125,3 +125,53 @@ def get_tier_color(tier):
         "Not Scored": "gray"
     }
     return colors.get(tier, "gray")
+
+
+def compute_portfolio_weighted_score(portfolio_df, prism_df=None):
+    """
+    Compute portfolio-level weighted average PRISM score.
+    This shows the overall portfolio balance: Overweight/Neutral/Underweight.
+    """
+    total_value = portfolio_df["amount"].sum()
+    
+    if total_value == 0:
+        return {
+            "weighted_score": 50,
+            "tier": "Neutral",
+            "interpretation": "No allocations",
+            "total_allocation": 0
+        }
+    
+    # Merge portfolio with PRISM scores
+    if prism_df is not None:
+        merged = portfolio_df.merge(
+            prism_df[["country", "sector", "prism_score"]],
+            on=["country", "sector"],
+            how="left"
+        )
+        # Use PRISM score, or 50 (neutral) if not available
+        merged["prism_score"] = merged["prism_score"].fillna(50)
+    else:
+        merged = portfolio_df.copy()
+        merged["prism_score"] = 50
+    
+    # Compute weighted average
+    weighted_score = (merged["prism_score"] * merged["amount"]).sum() / total_value
+    
+    # Determine portfolio tier
+    if weighted_score >= 65:
+        tier = "Overweight"
+        interpretation = "Portfolio is positioned for growth; overweight high-opportunity sectors and countries"
+    elif weighted_score >= 45:
+        tier = "Neutral"
+        interpretation = "Portfolio is balanced across opportunities and risk; neither aggressive nor conservative"
+    else:
+        tier = "Underweight"
+        interpretation = "Portfolio is positioned conservatively; underweight high-opportunity sectors"
+    
+    return {
+        "weighted_score": round(weighted_score, 1),
+        "tier": tier,
+        "interpretation": interpretation,
+        "total_allocation": total_value
+    }

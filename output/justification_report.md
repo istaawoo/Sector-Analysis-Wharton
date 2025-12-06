@@ -1,6 +1,6 @@
 # PRISM Portfolio Justification Report
 
-**Generated:** 2025-12-06 11:36:37
+**Generated:** 2025-12-06 12:09:29
 
 ---
 
@@ -11,11 +11,11 @@ This report analyzes the alignment between our portfolio allocations and the PRI
 **Portfolio Summary:**
 - Total Allocation: $407,500.00
 - Overweight Tier: $0.00 (0.0%)
-- Neutral Tier: $45,500.00 (11.2%)
-- Underweight Tier: $233,875.00 (57.4%)
+- Neutral Tier: $174,500.00 (42.8%)
+- Underweight Tier: $104,875.00 (25.7%)
 - Not Scored (ETFs): $128,125.00 (31.4%)
 
-**Average PRISM Score (individual stocks):** 50.6/100
+**Average PRISM Score (individual stocks):** 50.0/100
 
 ---
 
@@ -23,16 +23,16 @@ This report analyzes the alignment between our portfolio allocations and the PRI
 
 | Rank | Country | Sector | PRISM Score | Top Firms |
 |------|---------|--------|-------------|----------|
-| 1 | United States | Communication Services | 62.7 | META, GOOG, GOOGL |
-| 2 | Australia | Health Care | 58.7 | PME.AX |
-| 3 | China | Information Technology | 56.8 | BABA, TCEHY, JD |
-| 4 | United States | Health Care | 56.1 | LLY, UNH, JNJ |
-| 5 | South Korea | Information Technology | 55.5 | 005930.KS, 000660.KS, 035420.KS |
-| 6 | United States | Consumer Staples | 55.1 | COST, WMT, PG |
-| 7 | India | Information Technology | 54.4 | TCS.NS, INFY.NS |
-| 8 | Australia | Real Estate | 54.0 | GMG.AX |
-| 9 | Indonesia | Communication Services | 53.2 | TLKM.JK |
-| 10 | United States | Information Technology | 53.1 | MSFT, AAPL, NVDA |
+| 1 | United States | Communication Services | 65.2 | META, GOOG, GOOGL |
+| 2 | United States | Health Care | 58.7 | LLY, UNH, JNJ |
+| 3 | United States | Consumer Staples | 57.6 | COST, WMT, PG |
+| 4 | Australia | Health Care | 56.8 | PME.AX |
+| 5 | China | Information Technology | 56.4 | BABA, TCEHY, JD |
+| 6 | United States | Information Technology | 55.7 | MSFT, AAPL, NVDA |
+| 7 | United States | Financials | 55.1 | JPM, BAC, WFC |
+| 8 | South Korea | Information Technology | 53.5 | 005930.KS, 000660.KS, 035420.KS |
+| 9 | United States | Energy | 53.1 | N/A |
+| 10 | United States | Industrials | 53.1 | N/A |
 
 ---
 
@@ -40,349 +40,349 @@ This report analyzes the alignment between our portfolio allocations and the PRI
 
 ### Neutral Tier
 
-**META** ($10,000.00) — US / Communication Services
-
-*PRISM Score: 62.7/100*
-
-META (US - Communication Services) has a moderate PRISM score of 62.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
-
----
-
-**GOOG** ($10,000.00) — US / Communication Services
-
-*PRISM Score: 62.7/100*
-
-GOOG (US - Communication Services) has a moderate PRISM score of 62.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
-
----
-
-**COST** ($10,000.00) — US / Consumer Staples
-
-*PRISM Score: 55.1/100*
-
-COST (US - Consumer Staples) has a moderate PRISM score of 55.1/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
-
----
-
-**LLY** ($10,000.00) — US / Health Care
-
-*PRISM Score: 56.1/100*
-
-LLY (US - Health Care) has a moderate PRISM score of 56.1/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
-
----
-
-**PME.AX** ($2,000.00) — AU / Health Care
-
-*PRISM Score: 58.7/100*
-
-PME.AX (AU - Health Care) has a moderate PRISM score of 58.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
-
----
-
-**005930.KS** ($2,000.00) — KR / Information Technology
-
-*PRISM Score: 55.5/100*
-
-005930.KS (KR - Information Technology) has a moderate PRISM score of 55.5/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
-
----
-
-**000660.KS** ($1,500.00) — KR / Information Technology
-
-*PRISM Score: 55.5/100*
-
-000660.KS (KR - Information Technology) has a moderate PRISM score of 55.5/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
-
----
-
-### Underweight Tier
-
 **MSFT** ($20,000.00) — US / Information Technology
 
-*PRISM Score: 53.1/100*
+*PRISM Score: 55.7/100*
 
-MSFT (US - Information Technology) has a lower PRISM score of 53.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+MSFT (US - Information Technology) has a moderate PRISM score of 55.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
 
 ---
 
 **NVDA** ($20,000.00) — US / Information Technology
 
-*PRISM Score: 53.1/100*
+*PRISM Score: 55.7/100*
 
-NVDA (US - Information Technology) has a lower PRISM score of 53.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+NVDA (US - Information Technology) has a moderate PRISM score of 55.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
 
 ---
 
 **AAPL** ($15,000.00) — US / Information Technology
 
-*PRISM Score: 53.1/100*
+*PRISM Score: 55.7/100*
 
-AAPL (US - Information Technology) has a lower PRISM score of 53.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+AAPL (US - Information Technology) has a moderate PRISM score of 55.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
+
+---
+
+**META** ($10,000.00) — US / Communication Services
+
+*PRISM Score: 65.2/100*
+
+META (US - Communication Services) has a moderate PRISM score of 65.2/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
+
+---
+
+**GOOG** ($10,000.00) — US / Communication Services
+
+*PRISM Score: 65.2/100*
+
+GOOG (US - Communication Services) has a moderate PRISM score of 65.2/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
 
 ---
 
 **AVGO** ($10,000.00) — US / Information Technology
 
-*PRISM Score: 53.1/100*
+*PRISM Score: 55.7/100*
 
-AVGO (US - Information Technology) has a lower PRISM score of 53.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+AVGO (US - Information Technology) has a moderate PRISM score of 55.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
+
+---
+
+**COST** ($10,000.00) — US / Consumer Staples
+
+*PRISM Score: 57.6/100*
+
+COST (US - Consumer Staples) has a moderate PRISM score of 57.6/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
+
+---
+
+**LLY** ($10,000.00) — US / Health Care
+
+*PRISM Score: 58.7/100*
+
+LLY (US - Health Care) has a moderate PRISM score of 58.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
 
 ---
 
 **JPM** ($10,000.00) — US / Financials
 
-*PRISM Score: 52.5/100*
+*PRISM Score: 55.1/100*
 
-JPM (US - Financials) has a lower PRISM score of 52.5/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
-
----
-
-**TSM** ($10,000.00) — TW / Information Technology
-
-*PRISM Score: 49.0/100*
-
-TSM (TW - Information Technology) has a lower PRISM score of 49.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+JPM (US - Financials) has a moderate PRISM score of 55.1/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
 
 ---
 
 **PLTR** ($20,000.00) — US / Information Technology
 
-*PRISM Score: 53.1/100*
+*PRISM Score: 55.7/100*
 
-PLTR (US - Information Technology) has a lower PRISM score of 53.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+PLTR (US - Information Technology) has a moderate PRISM score of 55.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
 
 ---
 
 **RGTI** ($7,500.00) — US / Information Technology
 
-*PRISM Score: 53.1/100*
+*PRISM Score: 55.7/100*
 
-RGTI (US - Information Technology) has a lower PRISM score of 53.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+RGTI (US - Information Technology) has a moderate PRISM score of 55.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
 
 ---
 
 **QQQ** ($30,000.00) — US / Information Technology
 
-*PRISM Score: 53.1/100*
+*PRISM Score: 55.7/100*
 
-QQQ (US - Information Technology) has a lower PRISM score of 53.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+QQQ (US - Information Technology) has a moderate PRISM score of 55.7/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
+
+---
+
+**PME.AX** ($2,000.00) — AU / Health Care
+
+*PRISM Score: 56.8/100*
+
+PME.AX (AU - Health Care) has a moderate PRISM score of 56.8/100, placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification and balances risk exposure. Consider monitoring for rebalancing opportunities.
+
+---
+
+### Underweight Tier
+
+**TSM** ($10,000.00) — TW / Information Technology
+
+*PRISM Score: 46.8/100*
+
+TSM (TW - Information Technology) has a lower PRISM score of 46.8/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **SAP** ($5,000.00) — DE / Information Technology
 
-*PRISM Score: 51.8/100*
+*PRISM Score: 51.0/100*
 
-SAP (DE - Information Technology) has a lower PRISM score of 51.8/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+SAP (DE - Information Technology) has a lower PRISM score of 51.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **ALV.DE** ($4,000.00) — DE / Financials
 
-*PRISM Score: 49.0/100*
+*PRISM Score: 48.2/100*
 
-ALV.DE (DE - Financials) has a lower PRISM score of 49.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+ALV.DE (DE - Financials) has a lower PRISM score of 48.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **RHM.DE** ($3,750.00) — DE / Industrials
 
-*PRISM Score: 50.0/100*
+*PRISM Score: 49.2/100*
 
-RHM.DE (DE - Industrials) has a lower PRISM score of 50.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+RHM.DE (DE - Industrials) has a lower PRISM score of 49.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **MC.PA** ($4,000.00) — FR / Consumer Discretionary
 
-*PRISM Score: 49.1/100*
+*PRISM Score: 47.6/100*
 
-MC.PA (FR - Consumer Discretionary) has a lower PRISM score of 49.1/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+MC.PA (FR - Consumer Discretionary) has a lower PRISM score of 47.6/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **TTE.PA** ($3,000.00) — FR / Energy
 
-*PRISM Score: 49.2/100*
+*PRISM Score: 47.7/100*
 
-TTE.PA (FR - Energy) has a lower PRISM score of 49.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+TTE.PA (FR - Energy) has a lower PRISM score of 47.7/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **AI.PA** ($3,625.00) — FR / Materials
 
-*PRISM Score: 50.1/100*
+*PRISM Score: 48.6/100*
 
-AI.PA (FR - Materials) has a lower PRISM score of 50.1/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+AI.PA (FR - Materials) has a lower PRISM score of 48.6/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **8035.T** ($8,000.00) — JP / Information Technology
 
-*PRISM Score: 50.7/100*
+*PRISM Score: 49.0/100*
 
-8035.T (JP - Information Technology) has a lower PRISM score of 50.7/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+8035.T (JP - Information Technology) has a lower PRISM score of 49.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **6758.T** ($6,500.00) — JP / Consumer Discretionary
 
-*PRISM Score: 46.8/100*
+*PRISM Score: 45.1/100*
 
-6758.T (JP - Consumer Discretionary) has a lower PRISM score of 46.8/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+6758.T (JP - Consumer Discretionary) has a lower PRISM score of 45.1/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **9983.T** ($5,000.00) — JP / Consumer Discretionary
 
-*PRISM Score: 46.8/100*
+*PRISM Score: 45.1/100*
 
-9983.T (JP - Consumer Discretionary) has a lower PRISM score of 46.8/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+9983.T (JP - Consumer Discretionary) has a lower PRISM score of 45.1/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **8058.T** ($4,000.00) — JP / Industrials
 
-*PRISM Score: 45.5/100*
+*PRISM Score: 43.8/100*
 
-8058.T (JP - Industrials) has a lower PRISM score of 45.5/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+8058.T (JP - Industrials) has a lower PRISM score of 43.8/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **5803.T** ($3,062.50) — JP / Information Technology
 
-*PRISM Score: 50.7/100*
+*PRISM Score: 49.0/100*
 
-5803.T (JP - Information Technology) has a lower PRISM score of 50.7/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+5803.T (JP - Information Technology) has a lower PRISM score of 49.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **GMG.AX** ($3,000.00) — AU / Real Estate
 
-*PRISM Score: 54.0/100*
+*PRISM Score: 52.1/100*
 
-GMG.AX (AU - Real Estate) has a lower PRISM score of 54.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+GMG.AX (AU - Real Estate) has a lower PRISM score of 52.1/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **NWH.AX** ($1,750.00) — AU / Industrials
 
-*PRISM Score: 49.2/100*
+*PRISM Score: 47.2/100*
 
-NWH.AX (AU - Industrials) has a lower PRISM score of 49.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+NWH.AX (AU - Industrials) has a lower PRISM score of 47.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **ASB.AX** ($1,750.00) — AU / Industrials
 
-*PRISM Score: 49.2/100*
+*PRISM Score: 47.2/100*
 
-ASB.AX (AU - Industrials) has a lower PRISM score of 49.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+ASB.AX (AU - Industrials) has a lower PRISM score of 47.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **TCEHY** ($5,000.00) — CN / Communication Services
 
-*PRISM Score: 50.3/100*
+*PRISM Score: 49.9/100*
 
-TCEHY (CN - Communication Services) has a lower PRISM score of 50.3/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+TCEHY (CN - Communication Services) has a lower PRISM score of 49.9/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **BABA** ($5,000.00) — CN / Consumer Discretionary
 
-*PRISM Score: 45.1/100*
+*PRISM Score: 44.7/100*
 
-BABA (CN - Consumer Discretionary) has a lower PRISM score of 45.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+BABA (CN - Consumer Discretionary) has a lower PRISM score of 44.7/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **JD** ($4,000.00) — CN / Consumer Discretionary
 
-*PRISM Score: 45.1/100*
+*PRISM Score: 44.7/100*
 
-JD (CN - Consumer Discretionary) has a lower PRISM score of 45.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+JD (CN - Consumer Discretionary) has a lower PRISM score of 44.7/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **PDD** ($5,000.00) — CN / Consumer Discretionary
 
-*PRISM Score: 45.1/100*
+*PRISM Score: 44.7/100*
 
-PDD (CN - Consumer Discretionary) has a lower PRISM score of 45.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+PDD (CN - Consumer Discretionary) has a lower PRISM score of 44.7/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **1211.HK** ($3,500.00) — CN / Consumer Discretionary
 
-*PRISM Score: 45.1/100*
+*PRISM Score: 44.7/100*
 
-1211.HK (CN - Consumer Discretionary) has a lower PRISM score of 45.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+1211.HK (CN - Consumer Discretionary) has a lower PRISM score of 44.7/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **INCO.JK** ($2,000.00) — ID / Materials
 
-*PRISM Score: 43.1/100*
+*PRISM Score: 39.7/100*
 
-INCO.JK (ID - Materials) has a lower PRISM score of 43.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+INCO.JK (ID - Materials) has a lower PRISM score of 39.7/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **TLKM.JK** ($2,000.00) — ID / Communication Services
 
-*PRISM Score: 53.2/100*
+*PRISM Score: 49.8/100*
 
-TLKM.JK (ID - Communication Services) has a lower PRISM score of 53.2/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+TLKM.JK (ID - Communication Services) has a lower PRISM score of 49.8/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **ARTO.JK** ($2,000.00) — ID / Financials
 
-*PRISM Score: 42.1/100*
+*PRISM Score: 38.8/100*
 
-ARTO.JK (ID - Financials) has a lower PRISM score of 42.1/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+ARTO.JK (ID - Financials) has a lower PRISM score of 38.8/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **KLBF.JK** ($1,500.00) — ID / Health Care
 
-*PRISM Score: 47.2/100*
+*PRISM Score: 43.8/100*
 
-KLBF.JK (ID - Health Care) has a lower PRISM score of 47.2/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+KLBF.JK (ID - Health Care) has a lower PRISM score of 43.8/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **JSMR.JK** ($2,062.50) — ID / Industrials
 
-*PRISM Score: 42.3/100*
+*PRISM Score: 39.0/100*
 
-JSMR.JK (ID - Industrials) has a lower PRISM score of 42.3/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+JSMR.JK (ID - Industrials) has a lower PRISM score of 39.0/100, suggesting caution. Market behavior metrics (volatility, drawdown) indicate elevated risk. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+
+---
+
+**005930.KS** ($2,000.00) — KR / Information Technology
+
+*PRISM Score: 53.5/100*
+
+005930.KS (KR - Information Technology) has a lower PRISM score of 53.5/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+
+---
+
+**000660.KS** ($1,500.00) — KR / Information Technology
+
+*PRISM Score: 53.5/100*
+
+000660.KS (KR - Information Technology) has a lower PRISM score of 53.5/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **005380.KS** ($1,000.00) — KR / Consumer Discretionary
 
-*PRISM Score: 47.0/100*
+*PRISM Score: 45.0/100*
 
-005380.KS (KR - Consumer Discretionary) has a lower PRISM score of 47.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+005380.KS (KR - Consumer Discretionary) has a lower PRISM score of 45.0/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **035420.KS** ($1,000.00) — KR / Communication Services
 
-*PRISM Score: 48.9/100*
+*PRISM Score: 46.9/100*
 
-035420.KS (KR - Communication Services) has a lower PRISM score of 48.9/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+035420.KS (KR - Communication Services) has a lower PRISM score of 46.9/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 
 **035720.KS** ($875.00) — KR / Communication Services
 
-*PRISM Score: 48.9/100*
+*PRISM Score: 46.9/100*
 
-035720.KS (KR - Communication Services) has a lower PRISM score of 48.9/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
+035720.KS (KR - Communication Services) has a lower PRISM score of 46.9/100, suggesting caution. This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring.
 
 ---
 

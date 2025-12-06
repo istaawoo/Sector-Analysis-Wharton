@@ -22,7 +22,8 @@ from prism_data_loader import (
     get_country_summary,
     get_sector_summary,
     get_tier,
-    get_tier_color
+    get_tier_color,
+    compute_portfolio_weighted_score
 )
 
 # Page configuration
@@ -324,6 +325,32 @@ elif page == "💼 Our Portfolio":
     portfolio_df = get_portfolio_allocations()
     summary = get_allocation_summary()
     prism_df = load_prism_scores()
+    
+    st.markdown("---")
+    
+    # Portfolio weighted average (KEY METRIC)
+    portfolio_score = compute_portfolio_weighted_score(portfolio_df, prism_df)
+    
+    st.markdown("#### 🎯 Portfolio-Level PRISM Score")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.metric(
+            "Weighted Average PRISM",
+            f"{portfolio_score['weighted_score']:.1f}/100",
+            help="Calculated as sum of (holding_score × holding_amount) / total_allocation"
+        )
+    
+    with col2:
+        tier = portfolio_score['tier']
+        tier_emoji = {"Overweight": "🟢", "Neutral": "🟡", "Underweight": "🔴"}[tier]
+        st.metric("Portfolio Tier", f"{tier_emoji} {tier}")
+    
+    with col3:
+        st.metric("Total Allocation", f"${portfolio_score['total_allocation']:,.0f}")
+    
+    st.info(f"📊 **Portfolio Interpretation:** {portfolio_score['interpretation']}")
     
     st.markdown("---")
     

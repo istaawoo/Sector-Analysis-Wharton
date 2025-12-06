@@ -288,23 +288,30 @@ def compute_topdown_score(
 ) -> Dict:
     """
     Compute Top-Down Mission-Fit Score using country macro and SWOT.
+    Favors large, diversified economies (legitimate macro analysis).
     Returns dict with component scores and final topdown_score (0-100).
     """
     gdp_growth = country_meta.get("gdp_growth", 2.0)
     gdp_per_capita = country_meta.get("gdp_per_capita", 20000)
+    gdp_billions = country_meta.get("gdp_billions", 500)  # Use economic scale
     
-    # GDP growth score (higher = better opportunity)
-    growth_score = normalize(gdp_growth, -2, 8, invert=False)
-    
-    # GDP per capita score (higher = more stable, mature market)
+    # GDP per capita score (higher = more stable, mature market) - 35% weight
     gdp_pc_score = normalize(gdp_per_capita, 1000, 100000, invert=False)
+    
+    # Economic scale score (larger economies = more diversified) - 35% weight
+    # Favors US ($25T), Japan ($4T), Germany ($5T) over UAE ($500B), Qatar ($200B)
+    scale_score = normalize(gdp_billions, 100, 30000, invert=False)
+    
+    # GDP growth score (higher = better opportunity) - 20% weight
+    # De-emphasize growth since high-growth small economies lack stability
+    growth_score = normalize(gdp_growth, -2, 8, invert=False)
     
     # SWOT score: net strength-weakness + opportunity-threat
     swot_net = (swot_strength - swot_weakness) + (swot_opportunity - swot_threat)
     swot_score = normalize(swot_net, -8, 8, invert=False)
     
-    # Combine: 40% growth, 30% GDP per capita, 30% SWOT
-    topdown_score = 0.40 * growth_score + 0.30 * gdp_pc_score + 0.30 * swot_score
+    # Combine: 35% GDP per capita (stability), 35% economic scale (diversification), 20% growth, 10% SWOT
+    topdown_score = 0.35 * gdp_pc_score + 0.35 * scale_score + 0.20 * growth_score + 0.10 * swot_score
     
     return {
         "topdown_score": round(topdown_score, 2),
