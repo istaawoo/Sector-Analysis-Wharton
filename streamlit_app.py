@@ -344,8 +344,8 @@ elif page == "💼 Our Portfolio":
     
     with col2:
         tier = portfolio_score['tier']
-        tier_emoji = {"Overweight": "🟢", "Neutral": "🟡", "Underweight": "🔴"}[tier]
-        st.metric("Portfolio Tier", f"{tier_emoji} {tier}")
+        tier_emoji = {"Aggressive": "🔴", "Moderately Aggressive": "🟠", "Moderate": "🟡", "Conservative": "🟢"}[tier]
+        st.metric("Portfolio Strategy", f"{tier_emoji} {tier}")
     
     with col3:
         st.metric("Total Allocation", f"${portfolio_score['total_allocation']:,.0f}")
@@ -422,11 +422,11 @@ elif page == "💼 Our Portfolio":
         tier_counts = merged["tier"].value_counts()
         tier_amounts = merged.groupby("tier")["amount"].sum()
         
-        st.markdown("##### Tier Distribution")
+        st.markdown("##### Strategy Distribution by Tier")
         
         tier_cols = st.columns(4)
         
-        for i, tier in enumerate(["Overweight", "Neutral", "Underweight", "Not Scored"]):
+        for i, tier in enumerate(["Aggressive", "Moderate", "Conservative", "Not Scored"]):
             with tier_cols[i]:
                 count = tier_counts.get(tier, 0)
                 amount = tier_amounts.get(tier, 0)
@@ -454,8 +454,8 @@ elif page == "💼 Our Portfolio":
         
         with filter_col2:
             tier_filter = st.multiselect(
-                "Filter by Tier:",
-                options=["Overweight", "Neutral", "Underweight", "Not Scored"],
+                "Filter by Strategy:",
+                options=["Aggressive", "Moderate", "Conservative", "Not Scored"],
                 default=[]
             )
         
@@ -532,23 +532,23 @@ elif page == "💼 Our Portfolio":
                     st.markdown("##### Justification")
                     
                     tier = holding['tier']
-                    if tier == "Overweight":
+                    if tier == "Aggressive":
                         st.success(
                             f"**{selected_ticker}** ({holding['country']} - {holding['sector']}) receives a strong PRISM score of {prism_val:.1f}/100, "
-                            f"placing it in the 'Overweight' category. This allocation is well-supported by our quantitative analysis. "
+                            f"placing it in the 'Aggressive' category. This high-opportunity allocation drives portfolio growth. "
                             f"Key strengths: Structural score of {detail['structural_score']:.1f} and Fundamentals score of {detail['fundamentals_score']:.1f}."
                         )
-                    elif tier == "Neutral":
+                    elif tier == "Moderate":
                         st.info(
-                            f"**{selected_ticker}** ({holding['country']} - {holding['sector']}) has a moderate PRISM score of {prism_val:.1f}/100, "
-                            f"placing it in the 'Neutral' category. While not a top-tier opportunity, this allocation provides diversification "
-                            f"and balances risk exposure across our portfolio."
+                            f"**{selected_ticker}** ({holding['country']} - {holding['sector']}) has a PRISM score of {prism_val:.1f}/100, "
+                            f"placing it in the 'Moderate' category. This balanced allocation provides both growth potential and risk diversification "
+                            f"for our moderately aggressive portfolio strategy."
                         )
-                    elif tier == "Underweight":
+                    elif tier == "Conservative":
                         st.warning(
-                            f"**{selected_ticker}** ({holding['country']} - {holding['sector']}) has a lower PRISM score of {prism_val:.1f}/100. "
-                            f"This allocation may be justified by strategic diversification or contrarian positioning, but warrants close monitoring. "
-                            f"Consider rebalancing opportunities as market conditions evolve."
+                            f"**{selected_ticker}** ({holding['country']} - {holding['sector']}) has a PRISM score of {prism_val:.1f}/100. "
+                            f"This lower-opportunity allocation provides portfolio ballast and sector diversification, "
+                            f"reducing concentration risk while maintaining upside exposure."
                         )
             else:
                 st.info(
@@ -616,23 +616,42 @@ elif page == "📖 Methodology":
     
     st.code("""
 PRISM = 0.35 × Structural + 0.30 × Fundamentals + 0.20 × Behavior + 0.15 × TopDown
+
+Score Interpretation:
+  Aggressive (62-100): High-opportunity sectors/countries
+  Moderate (48-61): Balanced opportunities  
+  Conservative (0-47): Lower-opportunity/ballast
     """)
     
     st.markdown("---")
     
-    st.markdown("#### Tier Definitions")
+    st.markdown("#### Strategy Tier Definitions")
     
     tier_df = pd.DataFrame({
-        "Tier": ["Overweight", "Neutral", "Underweight"],
-        "PRISM Score Range": ["70-100", "55-69", "0-54"],
-        "Recommendation": [
-            "Strong opportunity, recommended overweight position",
-            "Moderate opportunity, neutral weight",
-            "Lower opportunity, consider underweight or avoid"
+        "Strategy Tier": ["Aggressive", "Moderate", "Conservative"],
+        "PRISM Score Range": ["62-100", "48-61", "0-47"],
+        "Description": [
+            "High-opportunity sectors/countries; drives portfolio growth",
+            "Balanced opportunities; balances growth with diversification",
+            "Lower-opportunity; provides ballast and sector diversification"
         ]
     })
     
     st.table(tier_df)
+    
+    st.markdown("---")
+    
+    st.markdown("#### Portfolio Strategy")
+    
+    st.markdown("""
+    Our portfolio follows a **moderately aggressive** strategy, balancing growth opportunities with prudent risk management:
+    
+    - **Aggressive positions** (62+ PRISM): High-opportunity sectors and countries that drive growth
+    - **Moderate positions** (48-61 PRISM): Balanced opportunities providing both upside and diversification
+    - **Conservative positions** (<48 PRISM): Portfolio ballast and sector diversification
+    
+    This mix enables us to pursue compelling opportunities while maintaining a resilient, diversified portfolio aligned with our investment objectives.
+    """)
     
     st.markdown("---")
     

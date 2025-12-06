@@ -105,23 +105,23 @@ def get_sector_summary(prism_df):
 
 
 def get_tier(prism_score):
-    """Convert PRISM score to tier label. Adjusted thresholds for flexibility."""
+    """Convert PRISM score to tier label based on strategy classification."""
     if pd.isna(prism_score):
         return "Not Scored"
-    elif prism_score >= 65:  # Lowered from 70
-        return "Overweight"
-    elif prism_score >= 45:  # Lowered from 55
-        return "Neutral"
-    else:
-        return "Underweight"
+    elif prism_score >= 62:  # Aggressive opportunities
+        return "Aggressive"
+    elif prism_score >= 48:  # Moderate opportunities
+        return "Moderate"
+    else:  # Conservative/lower opportunities
+        return "Conservative"
 
 
 def get_tier_color(tier):
     """Get color for tier badges"""
     colors = {
-        "Overweight": "green",
-        "Neutral": "blue",
-        "Underweight": "orange",
+        "Aggressive": "green",
+        "Moderate": "blue",
+        "Conservative": "orange",
         "Not Scored": "gray"
     }
     return colors.get(tier, "gray")
@@ -158,16 +158,19 @@ def compute_portfolio_weighted_score(portfolio_df, prism_df=None):
     # Compute weighted average
     weighted_score = (merged["prism_score"] * merged["amount"]).sum() / total_value
     
-    # Determine portfolio tier
-    if weighted_score >= 65:
-        tier = "Overweight"
-        interpretation = "Portfolio is positioned for growth; overweight high-opportunity sectors and countries"
-    elif weighted_score >= 45:
-        tier = "Neutral"
-        interpretation = "Portfolio is balanced across opportunities and risk; neither aggressive nor conservative"
+    # Determine portfolio tier (adjusted for moderately aggressive strategy)
+    if weighted_score >= 62:
+        tier = "Aggressive"
+        interpretation = "Portfolio is positioned for growth; highly aggressive allocation to high-opportunity sectors and countries"
+    elif weighted_score >= 55:
+        tier = "Moderately Aggressive"
+        interpretation = "Portfolio pursues growth opportunities while maintaining risk balance; moderately aggressive positioning across diversified sectors"
+    elif weighted_score >= 48:
+        tier = "Moderate"
+        interpretation = "Portfolio is balanced across opportunities and risk; moderate positioning"
     else:
-        tier = "Underweight"
-        interpretation = "Portfolio is positioned conservatively; underweight high-opportunity sectors"
+        tier = "Conservative"
+        interpretation = "Portfolio is positioned conservatively; conservative allocation to lower-opportunity sectors"
     
     return {
         "weighted_score": round(weighted_score, 1),
