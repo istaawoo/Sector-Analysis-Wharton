@@ -179,7 +179,7 @@ def run_prism_analysis(output_dir: str = "output", top_n_firms: int = 5, cache_d
     )
     
     backsolve_path = os.path.join(output_dir, "backsolve_changes.json")
-    with open(backsolve_path, 'w') as f:
+    with open(backsolve_path, 'w', encoding='utf-8') as f:
         json.dump(backsolve_result, f, indent=2)
     print(f"  Saved: {backsolve_path}")
     print(f"  {backsolve_result['message']}")
@@ -212,7 +212,7 @@ def generate_justification_report(
     output_path: str
 ):
     """Generate human-readable justification report in Markdown."""
-    with open(output_path, 'w') as f:
+    with open(output_path, 'w', encoding='utf-8') as f:
         f.write("# PRISM Portfolio Justification Report\n\n")
         f.write(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
         f.write("---\n\n")
@@ -288,7 +288,7 @@ def generate_justification_report(
 
 def generate_methodology(output_path: str):
     """Generate detailed methodology.md file."""
-    with open(output_path, 'w') as f:
+    with open(output_path, 'w', encoding='utf-8') as f:
         f.write("# PRISM Methodology\n\n")
         f.write(f"**Version:** 1.0  \n")
         f.write(f"**Last Updated:** {datetime.now().strftime('%Y-%m-%d')}\n\n")

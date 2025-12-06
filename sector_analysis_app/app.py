@@ -13,21 +13,23 @@ from io import StringIO
 import streamlit as st
 import pandas as pd
 
-# Try to import helpers in both absolute and package-relative ways so it works
-# whether the module is run as a package or as a script.
+# Add current directory and src to path for flexible imports
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_src_dir = os.path.join(_current_dir, "src")
+if _src_dir not in sys.path:
+    sys.path.insert(0, _src_dir)
+if _current_dir not in sys.path:
+    sys.path.insert(0, _current_dir)
+
+# Import helpers - now works in all contexts
 try:
-    # preferred when running from repo root: "streamlit run sector_analysis_app/app.py"
-    from src import data, scoring, plots, utils
-except Exception:
+    from sector_analysis_app.src import data, scoring, plots, utils
+except ImportError:
     try:
-        # preferred when loaded as package: "import sector_analysis_app.app"
-        from .src import data, scoring, plots, utils
-    except Exception as exc:
-        # Raise a helpful ImportError to show in logs / UI
-        raise ImportError(
-            "Failed to import helper modules. Ensure 'src' is on PYTHONPATH "
-            "or attempt the other import style. Original error: " + str(exc)
-        ) from exc
+        from src import data, scoring, plots, utils
+    except ImportError:
+        # Last resort: direct import if src is already on path
+        import data, scoring, plots, utils
 
 
 # at top of file: ensure streamlit imported as st (already is)
