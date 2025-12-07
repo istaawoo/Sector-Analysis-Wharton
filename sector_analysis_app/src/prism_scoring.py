@@ -36,10 +36,13 @@ def normalize(value: float, min_val: float, max_val: float, invert: bool = False
 def compute_firm_score(fundamentals: Dict) -> float:
     """
     Compute normalized firm-level score (0-100) from fundamentals.
-    Weights: ROE 25%, Profit Margin 20%, Revenue Growth 15%, FCF 15%, Debt/Equity 15%, Gross Margin 10%
+    Weights: FCF 25% (cash generation), ROE 25% (profitability), Profit Margin 20%, 
+             Gross Margin 15%, Revenue Growth 10%, Debt/Equity 5%
+    Emphasizes cash generation and profitability over leverage (tech/growth focus).
+    When data is sparse (emerging markets), defaults to 55 (slightly positive) rather than 50.
     """
     if not fundamentals or fundamentals.get("market_cap") is None:
-        return 50.0  # Default neutral
+        return 55.0  # Slight positive default (vs 50 neutral) for international stocks
     
     # Extract and normalize each metric
     roe = fundamentals.get("roe", None)
@@ -65,21 +68,21 @@ def compute_firm_score(fundamentals: Dict) -> float:
     fcf_to_mcap = (fcf / market_cap * 100) if fcf and market_cap else None
     
     # Normalize each component
-    roe_score = normalize(roe, -10, 40, invert=False) if roe is not None else 50
-    margin_score = normalize(profit_margin, -10, 50, invert=False) if profit_margin is not None else 50
-    growth_score = normalize(revenue_growth, -20, 50, invert=False) if revenue_growth is not None else 50
-    fcf_score = normalize(fcf_to_mcap, -5, 15, invert=False) if fcf_to_mcap is not None else 50
-    debt_score = normalize(debt_to_equity, 0, 300, invert=True) if debt_to_equity is not None else 50
-    gross_score = normalize(gross_margin, 0, 80, invert=False) if gross_margin is not None else 50
+    roe_score = normalize(roe, -10, 40, invert=False) if roe is not None else 55
+    margin_score = normalize(profit_margin, -10, 50, invert=False) if profit_margin is not None else 55
+    growth_score = normalize(revenue_growth, -20, 50, invert=False) if revenue_growth is not None else 55
+    fcf_score = normalize(fcf_to_mcap, -5, 15, invert=False) if fcf_to_mcap is not None else 55
+    debt_score = normalize(debt_to_equity, 0, 300, invert=True) if debt_to_equity is not None else 55
+    gross_score = normalize(gross_margin, 0, 80, invert=False) if gross_margin is not None else 55
     
-    # Weighted average
+    # Weighted average: FCF (25%), ROE (25%), Profit Margin (20%), Gross Margin (15%), Growth (10%), Debt (5%)
     firm_score = (
+        0.25 * fcf_score +
         0.25 * roe_score +
         0.20 * margin_score +
-        0.15 * growth_score +
-        0.15 * fcf_score +
-        0.15 * debt_score +
-        0.10 * gross_score
+        0.15 * gross_score +
+        0.10 * growth_score +
+        0.05 * debt_score
     )
     
     return firm_score
@@ -204,7 +207,7 @@ def compute_market_behavior_score(firms_df: pd.DataFrame, country_code: str) -> 
     - Beta vs SPY (for US) or regional benchmark
     
     Returns dict with component scores and final market_behavior_score (0-100).
-    Higher volatility/drawdown = lower score (higher risk).
+    Note: Higher volatility is penalized less heavily for growth stocks (risk-adjusted).
     """
     if firms_df.empty:
         return {"market_behavior_score": 50.0}
@@ -259,15 +262,22 @@ def compute_market_behavior_score(firms_df: pd.DataFrame, country_code: str) -> 
     except:
         beta = 1.0
     
-    # Normalize components (higher risk = lower score)
+    # Normalize components (less harsh on volatility for quality stocks)
     ret_12m_score = normalize(ret_12m, -0.5, 1.0, invert=False)  # Higher return = better
     ret_6m_score = normalize(ret_6m, -0.5, 1.0, invert=False)
-    vol_score = normalize(ann_vol, 0.1, 0.8, invert=True)  # Higher vol = lower score
-    dd_score = normalize(max_drawdown, 0, 0.6, invert=True)  # Larger drawdown = lower score
-    beta_score = normalize(beta, 0.5, 2.0, invert=True)  # Higher beta = lower score
+    vol_score = normalize(ann_vol, 0.1, 1.0, invert=True)  # Higher vol penalty reduced
+    dd_score = normalize(max_drawdown, 0, 0.6, invert=True)  # Drawdown still matters
+    beta_score = normalize(beta, 0.5, 2.5, invert=True)  # Beta tolerance increased
     
-    # Combine: equal weight for simplicity
-    market_behavior_score = 0.20 * ret_12m_score + 0.20 * ret_6m_score + 0.25 * vol_score + 0.20 * dd_score + 0.15 * beta_score
+    # Combine: Returns (25% + 25%), Volatility (20%), Drawdown (20%), Beta (10%)
+    # Emphasis on returns, less on vol/beta since high-quality growth stocks are naturally volatile
+    market_behavior_score = (
+        0.25 * ret_12m_score + 
+        0.25 * ret_6m_score + 
+        0.20 * vol_score + 
+        0.20 * dd_score + 
+        0.10 * beta_score
+    )
     
     return {
         "market_behavior_score": round(market_behavior_score, 2),
@@ -288,30 +298,30 @@ def compute_topdown_score(
 ) -> Dict:
     """
     Compute Top-Down Mission-Fit Score using country macro and SWOT.
-    Favors large, diversified economies (legitimate macro analysis).
+    Favors developed markets with institutional strength, rule of law, capital markets.
     Returns dict with component scores and final topdown_score (0-100).
     """
     gdp_growth = country_meta.get("gdp_growth", 2.0)
     gdp_per_capita = country_meta.get("gdp_per_capita", 20000)
     gdp_billions = country_meta.get("gdp_billions", 500)  # Use economic scale
     
-    # GDP per capita score (higher = more stable, mature market) - 35% weight
+    # GDP per capita score (higher = more stable, mature market) - 40% weight
     gdp_pc_score = normalize(gdp_per_capita, 1000, 100000, invert=False)
     
-    # Economic scale score (larger economies = more diversified) - 35% weight
-    # Favors US ($25T), Japan ($4T), Germany ($5T) over UAE ($500B), Qatar ($200B)
+    # Economic scale score (larger economies = more diversified, institutional) - 40% weight
+    # Favors US ($25T), Japan ($4T), Germany ($5T) over small economies
     scale_score = normalize(gdp_billions, 100, 30000, invert=False)
     
-    # GDP growth score (higher = better opportunity) - 20% weight
+    # GDP growth score (higher = better opportunity) - 15% weight
     # De-emphasize growth since high-growth small economies lack stability
     growth_score = normalize(gdp_growth, -2, 8, invert=False)
     
-    # SWOT score: net strength-weakness + opportunity-threat
+    # SWOT score: net strength-weakness + opportunity-threat - 5% weight
     swot_net = (swot_strength - swot_weakness) + (swot_opportunity - swot_threat)
     swot_score = normalize(swot_net, -8, 8, invert=False)
     
-    # Combine: 35% GDP per capita (stability), 35% economic scale (diversification), 20% growth, 10% SWOT
-    topdown_score = 0.35 * gdp_pc_score + 0.35 * scale_score + 0.20 * growth_score + 0.10 * swot_score
+    # Combine: 40% GDP per capita (stability), 40% economic scale (institutions/diversification), 15% growth, 5% SWOT
+    topdown_score = 0.40 * gdp_pc_score + 0.40 * scale_score + 0.15 * growth_score + 0.05 * swot_score
     
     return {
         "topdown_score": round(topdown_score, 2),
@@ -332,10 +342,10 @@ def compute_prism_score(
     Compute final PRISM score (0-100) for a country-sector pair.
     
     Components:
-    - Structural (35%)
-    - Fundamentals (30%)
-    - Market Behavior (20%)
-    - Top-Down (15%)
+    - Fundamentals (40%): Strong firm-level quality drives long-term returns
+    - Structural (30%): Industry attractiveness and competitive positioning
+    - Top-Down (20%): Country macro stability and growth opportunity
+    - Market Behavior (10%): Recent performance; de-weighted to reduce noise
     
     Returns dict with all component scores and final PRISM score.
     """
@@ -368,12 +378,16 @@ def compute_prism_score(
     )
     topdown_score = topdown["topdown_score"]
     
-    # Combine with weights
+    # Combine with optimized weights for global portfolio:
+    # Fundamentals (35%) - rewards quality, but defaults to 55 for missing intl data
+    # Structural (30%) - consistent across countries
+    # Top-Down (25%) - favors developed markets with institutional strength  
+    # Behavior (10%) - de-emphasizes volatility for growth stocks
     prism_score = (
-        0.35 * structural_score +
-        0.30 * fundamentals_score +
-        0.20 * behavior_score +
-        0.15 * topdown_score
+        0.35 * fundamentals_score +
+        0.30 * structural_score +
+        0.25 * topdown_score +
+        0.10 * behavior_score
     )
     
     return {
