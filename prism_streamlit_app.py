@@ -620,4 +620,4 @@ PRISM = 0.35 × Structural + 0.30 × Fundamentals + 0.20 × Behavior + 0.15 × T
 
 # Footer
 st.markdown("---")
-st.markdown("*PRISM - Developed for Wharton Sector Analysis Competition 2025*")
+st.markdown("*PRISM - Developed for Wharton Global High School Investment Competition*")

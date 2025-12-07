@@ -666,4 +666,4 @@ Score Interpretation:
 
 # Footer
 st.markdown("---")
-st.markdown("*PRISM - Developed for Wharton Sector Analysis Competition 2025*")
+st.markdown("*PRISM - Developed for Wharton Global High School Investment Competition*")
