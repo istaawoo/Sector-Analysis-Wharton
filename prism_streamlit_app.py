@@ -28,7 +28,7 @@ from prism_data_loader import (
 # Page configuration
 st.set_page_config(
     page_title="PRISM - Portfolio Investment Scoring",
-    page_icon="🌍",
+    page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -50,12 +50,12 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Sidebar navigation
-st.sidebar.title("🌍 PRISM Navigation")
+st.sidebar.title("PRISM Navigation")
 st.sidebar.markdown("---")
 
 page = st.sidebar.radio(
     "Select Page:",
-    ["🏠 Home", "🌎 Country Rankings", "📊 Sector Analysis", "💼 Our Portfolio", "📖 Methodology"]
+    ["Home", "Country Rankings", "Sector Analysis", "Our Portfolio", "Methodology"]
 )
 
 st.sidebar.markdown("---")
@@ -65,8 +65,8 @@ st.sidebar.info(
 )
 
 # Main content based on selected page
-if page == "🏠 Home":
-    st.title("🌍 PRISM - Portfolio Risk & Investment Scoring Model")
+if page == "Home":
+    st.title("PRISM - Portfolio Risk & Investment Scoring Model")
     st.markdown("### Systematic Country-Sector Investment Analysis")
     
     st.markdown("---")
@@ -74,7 +74,7 @@ if page == "🏠 Home":
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown("#### 🔍 What We Analyze")
+        st.markdown("#### What We Analyze")
         st.markdown("""
         - **40 Countries** (top economies by GDP)
         - **11 GICS Sectors** per country
@@ -82,7 +82,7 @@ if page == "🏠 Home":
         """)
     
     with col2:
-        st.markdown("#### 📈 How We Score")
+        st.markdown("#### How We Score")
         st.markdown("""
         - Structural Factors (35%)
         - Firm Fundamentals (30%)
@@ -91,7 +91,7 @@ if page == "🏠 Home":
         """)
     
     with col3:
-        st.markdown("#### 💡 Our Approach")
+        st.markdown("#### Our Approach")
         st.markdown("""
         - Objective, data-driven
         - Transparent methodology
@@ -100,7 +100,7 @@ if page == "🏠 Home":
     
     st.markdown("---")
     
-    st.markdown("### 🎯 How to Use This App")
+    st.markdown("### How to Use This App")
     
     st.info("""
     **1. Country Rankings** - See which countries score highest across all sectors
@@ -114,7 +114,7 @@ if page == "🏠 Home":
     
     st.markdown("---")
     
-    st.markdown("### 📊 Quick Stats")
+    st.markdown("### Quick Stats")
     
     # Placeholder stats - will be populated when PRISM data loads
     col1, col2, col3, col4 = st.columns(4)
@@ -133,20 +133,20 @@ if page == "🏠 Home":
     
     st.markdown("---")
     
-    st.success("👈 Use the sidebar to navigate to different sections of the analysis.")
+    st.success("Use the sidebar to navigate to different sections of the analysis.")
 
-elif page == "🌎 Country Rankings":
-    st.title("🌎 Country Rankings")
+elif page == "Country Rankings":
+    st.title("Country Rankings")
     st.markdown("### Top Investment Opportunities by Country")
     
     # Load PRISM data
     prism_df = load_prism_scores()
     
     if prism_df is None:
-        st.warning("⚠️ PRISM scores not generated yet. Run `python run_prism.py --output_dir output/` first to generate country-sector scores.")
+        st.warning("PRISM scores not generated yet. Run `python run_prism.py --output_dir output/` first to generate country-sector scores.")
         st.info("The app will display sample data once PRISM analysis completes (~15-30 minutes).")
     else:
-        st.success(f"✅ Loaded {len(prism_df)} country-sector scores")
+        st.success(f"Loaded {len(prism_df)} country-sector scores")
         
         # Get country summary
         country_summary = get_country_summary(prism_df)
@@ -154,7 +154,7 @@ elif page == "🌎 Country Rankings":
         st.markdown("---")
         
         # Top 10 countries by average PRISM score
-        st.markdown("#### 🏆 Top 10 Countries by Average PRISM Score")
+        st.markdown("#### Top 10 Countries by Average PRISM Score")
         
         top10 = country_summary.head(10)
         
@@ -181,7 +181,7 @@ elif page == "🌎 Country Rankings":
         st.markdown("---")
         
         # Filter section
-        st.markdown("#### 🔍 Explore Specific Country")
+        st.markdown("#### Explore Specific Country")
         
         selected_country = st.selectbox(
             "Select a country to view detailed sector breakdown:",
@@ -220,17 +220,17 @@ elif page == "🌎 Country Rankings":
             fig.update_layout(xaxis_tickangle=-45)
             st.plotly_chart(fig, use_container_width=True)
 
-elif page == "📊 Sector Analysis":
-    st.title("📊 Sector Analysis")
+elif page == "Sector Analysis":
+    st.title("Sector Analysis")
     st.markdown("### Compare Sectors Across Countries")
     
     # Load PRISM data
     prism_df = load_prism_scores()
     
     if prism_df is None:
-        st.warning("⚠️ PRISM scores not generated yet. Run `python run_prism.py --output_dir output/` first.")
+        st.warning("PRISM scores not generated yet. Run `python run_prism.py --output_dir output/` first.")
     else:
-        st.success(f"✅ Analyzing 11 GICS sectors across {prism_df['country'].nunique()} countries")
+        st.success(f"Analyzing 11 GICS sectors across {prism_df['country'].nunique()} countries")
         
         # Get sector summary
         sector_summary = get_sector_summary(prism_df)
@@ -238,7 +238,7 @@ elif page == "📊 Sector Analysis":
         st.markdown("---")
         
         # Global sector rankings
-        st.markdown("#### 🌍 Global Sector Rankings (Average Across All Countries)")
+        st.markdown("#### Global Sector Rankings (Average Across All Countries)")
         
         col1, col2 = st.columns([2, 1])
         
@@ -264,7 +264,7 @@ elif page == "📊 Sector Analysis":
         st.markdown("---")
         
         # Sector heatmap
-        st.markdown("#### 🔥 Sector Heatmap (Top 20 Countries)")
+        st.markdown("#### Sector Heatmap (Top 20 Countries)")
         
         # Get top 20 countries by avg score
         country_summary = get_country_summary(prism_df)
@@ -294,7 +294,7 @@ elif page == "📊 Sector Analysis":
         st.markdown("---")
         
         # Detailed sector view
-        st.markdown("#### 🔍 Detailed Sector View")
+        st.markdown("#### Detailed Sector View")
         
         selected_sector = st.selectbox(
             "Select a sector to see top countries:",
@@ -316,8 +316,8 @@ elif page == "📊 Sector Analysis":
             
             st.dataframe(display_df, use_container_width=True, hide_index=True)
 
-elif page == "💼 Our Portfolio":
-    st.title("💼 Our Portfolio")
+elif page == "Our Portfolio":
+    st.title("Our Portfolio")
     st.markdown("### $500K Allocation with PRISM Justifications")
     
     # Load portfolio data
@@ -328,7 +328,7 @@ elif page == "💼 Our Portfolio":
     st.markdown("---")
     
     # Portfolio summary
-    st.markdown("#### 📊 Portfolio Overview")
+    st.markdown("#### Portfolio Overview")
     
     col1, col2, col3, col4 = st.columns(4)
     
@@ -375,7 +375,7 @@ elif page == "💼 Our Portfolio":
     st.markdown("---")
     
     # Holdings table with PRISM scores
-    st.markdown("#### 📋 All Holdings with PRISM Scores")
+    st.markdown("#### All Holdings with PRISM Scores")
     
     if prism_df is not None:
         # Merge portfolio with PRISM scores
@@ -450,7 +450,7 @@ elif page == "💼 Our Portfolio":
         st.markdown("---")
         
         # Individual justifications
-        st.markdown("#### 💡 Individual Holding Justifications")
+        st.markdown("#### Individual Holding Justifications")
         
         st.info("Select a holding to see detailed PRISM justification")
         
@@ -530,7 +530,7 @@ elif page == "💼 Our Portfolio":
                 )
     
     else:
-        st.warning("⚠️ PRISM scores not available. Run `python run_prism.py --output_dir output/` to generate scores and justifications.")
+        st.warning("PRISM scores not available. Run `python run_prism.py --output_dir output/` to generate scores and justifications.")
         
         # Show portfolio without scores
         st.markdown("##### Holdings (PRISM scores pending)")
@@ -539,8 +539,8 @@ elif page == "💼 Our Portfolio":
         display_df["Amount ($)"] = display_df["Amount ($)"].apply(lambda x: f"${x:,.2f}")
         st.dataframe(display_df, use_container_width=True, hide_index=True)
 
-elif page == "📖 Methodology":
-    st.title("📖 PRISM Methodology")
+elif page == "Methodology":
+    st.title("PRISM Methodology")
     st.markdown("### How We Calculate Investment Scores")
     
     st.markdown("---")

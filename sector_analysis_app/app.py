@@ -36,7 +36,7 @@ except ImportError:
 @st.cache_data(ttl=86400, show_spinner=False)
 def cached_get_spy_and_etf_csv(etf_ticker: str):
     """
-    Cached wrapper — returns tuple of CSV strings (etf_csv, spy_csv).
+    Cached wrapper - returns tuple of CSV strings (etf_csv, spy_csv).
     TTL: 24 hours (86400 seconds)
     """
     etf_df, spy_df = data.get_spy_and_etf(etf_ticker)
@@ -61,7 +61,7 @@ def _store_df_in_session(df: pd.DataFrame, key: str):
 
 def main():
     # Small server-side trace to make logs useful
-    print("APP START — new run", flush=True)
+    print("APP START - new run", flush=True)
 
     # Streamlit UI setup
     st.set_page_config(page_title="Sector Risk Analysis", layout="wide")
@@ -136,7 +136,7 @@ def main():
     if do_fetch:
         with st.spinner("Fetching data..."):
             try:
-                # use cached CSV wrapper (long TTL) — returns (etf_csv, spy_csv)
+                # use cached CSV wrapper (long TTL) - returns (etf_csv, spy_csv)
                 print(f"START FETCH: ticker={st.session_state.get('etf_choice', etf_choice)} last_ticker={st.session_state.get('last_ticker')} auto_fetch={st.session_state.get('auto_fetch')}", flush=True)
                 etf_csv, spy_csv = cached_get_spy_and_etf_csv(st.session_state.get("etf_choice", etf_choice))
                 # store CSVs in session (already compatible with your session approach)
@@ -218,7 +218,7 @@ def main():
         life_s = scoring.lifecycle_score(lifecycle)
         swot_s = scoring.swot_score(s_strength, s_weakness, s_opportunity, s_threat)
         topdown = scoring.combine_topdown(porter_s, life_s, swot_s)
-        st.markdown(f"**Top-Down Combined Score (1-5):** {topdown:.2f} — Porter {porter_s:.2f}, LifeCycle {life_s:.2f}, SWOT {swot_s:.2f}")
+        st.markdown(f"**Top-Down Combined Score (1-5):** {topdown:.2f} - Porter {porter_s:.2f}, LifeCycle {life_s:.2f}, SWOT {swot_s:.2f}")
         metrics["fundamentals"]["topdown_score"] = topdown
     except Exception as e:
         st.error("Error computing top-down score.")
@@ -256,7 +256,7 @@ def main():
     with colA:
         st.metric("Actual Sector Risk Score (0-100)", f"{result['final_score']:.2f}")
     with colB:
-        st.write("User overrides — adjust raw values to see new score")
+        st.write("User overrides - adjust raw values to see new score")
         overrides = {}
         overrides["1y_vol"] = st.number_input("Override 1y vol (ann)", value=float(v.get("1y_vol", 0)), format="%.6f")
         overrides["beta"] = st.number_input("Override Beta", value=float(v.get("beta", 0)), format="%.3f")
@@ -289,7 +289,7 @@ def main():
                 if df.empty:
                     st.warning("Price data exists but 'Close' column is empty after cleanup.")
                 else:
-                    st.plotly_chart(plots.price_chart(df, title=f"{etf_choice} — 2y Price"), width='stretch')
+                    st.plotly_chart(plots.price_chart(df, title=f"{etf_choice} - 2y Price"), width='stretch')
                     st.plotly_chart(plots.rolling_volatility_chart(df, window=21), width='stretch')
         except Exception as e:
             st.error("Failed to render charts on left column.")
@@ -313,7 +313,7 @@ def main():
                 if df2.empty:
                     st.warning("Price data exists but 'Close' column is empty after cleanup for drawdown.")
                 else:
-                    st.plotly_chart(plots.drawdown_chart(df2, title=f"{etf_choice} — Drawdown"), width='stretch')
+                    st.plotly_chart(plots.drawdown_chart(df2, title=f"{etf_choice} - Drawdown"), width='stretch')
         except Exception as e:
             st.error("Failed to render drawdown chart.")
             st.exception(e)
@@ -321,7 +321,7 @@ def main():
 
     st.markdown("---")
     st.write("Methodology: Volatility (40%), Performance (30%), Market Behavior (20%), Fundamentals (10%).")
-    print("APP END — run finished normally", flush=True)
+    print("APP END - run finished normally", flush=True)
 
 
 # Run the app inside a global try/except so errors surface instead of blanking
