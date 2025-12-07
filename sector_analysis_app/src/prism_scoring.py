@@ -379,15 +379,15 @@ def compute_prism_score(
     topdown_score = topdown["topdown_score"]
     
     # Combine with optimized weights for global portfolio:
-    # Fundamentals (35%) - rewards quality, but defaults to 55 for missing intl data
-    # Structural (30%) - consistent across countries
-    # Top-Down (25%) - favors developed markets with institutional strength  
-    # Behavior (10%) - de-emphasizes volatility for growth stocks
+    # Top-Down (30%) - favors developed markets with institutional strength, also supports EM macro
+    # Structural (35%) - consistent Porter/lifecycle analysis across all countries
+    # Fundamentals (20%) - data quality varies, defaults to 55 for intl stocks
+    # Behavior (15%) - recent performance, less noisy at this weight
     prism_score = (
-        0.35 * fundamentals_score +
-        0.30 * structural_score +
-        0.25 * topdown_score +
-        0.10 * behavior_score
+        0.30 * topdown_score +
+        0.35 * structural_score +
+        0.20 * fundamentals_score +
+        0.15 * behavior_score
     )
     
     return {
