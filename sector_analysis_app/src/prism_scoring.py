@@ -39,10 +39,12 @@ def compute_firm_score(fundamentals: Dict) -> float:
     Weights: FCF 25% (cash generation), ROE 25% (profitability), Profit Margin 20%, 
              Gross Margin 15%, Revenue Growth 10%, Debt/Equity 5%
     Emphasizes cash generation and profitability over leverage (tech/growth focus).
-    When data is sparse (emerging markets), defaults to 55 (slightly positive) rather than 50.
+    When data is sparse (emerging markets, international), defaults to 60 (moderately positive)
+    to avoid penalizing quality companies in regions with poor data coverage.
     """
     if not fundamentals or fundamentals.get("market_cap") is None:
-        return 55.0  # Slight positive default (vs 50 neutral) for international stocks
+        return 62.0  # Moderately positive default (62) for international stocks with missing data
+                      # This reflects that quality companies exist in all markets
     
     # Extract and normalize each metric
     roe = fundamentals.get("roe", None)
@@ -68,12 +70,12 @@ def compute_firm_score(fundamentals: Dict) -> float:
     fcf_to_mcap = (fcf / market_cap * 100) if fcf and market_cap else None
     
     # Normalize each component
-    roe_score = normalize(roe, -10, 40, invert=False) if roe is not None else 55
-    margin_score = normalize(profit_margin, -10, 50, invert=False) if profit_margin is not None else 55
-    growth_score = normalize(revenue_growth, -20, 50, invert=False) if revenue_growth is not None else 55
-    fcf_score = normalize(fcf_to_mcap, -5, 15, invert=False) if fcf_to_mcap is not None else 55
-    debt_score = normalize(debt_to_equity, 0, 300, invert=True) if debt_to_equity is not None else 55
-    gross_score = normalize(gross_margin, 0, 80, invert=False) if gross_margin is not None else 55
+    roe_score = normalize(roe, -10, 40, invert=False) if roe is not None else 62
+    margin_score = normalize(profit_margin, -10, 50, invert=False) if profit_margin is not None else 62
+    growth_score = normalize(revenue_growth, -20, 50, invert=False) if revenue_growth is not None else 62
+    fcf_score = normalize(fcf_to_mcap, -5, 15, invert=False) if fcf_to_mcap is not None else 62
+    debt_score = normalize(debt_to_equity, 0, 300, invert=True) if debt_to_equity is not None else 62
+    gross_score = normalize(gross_margin, 0, 80, invert=False) if gross_margin is not None else 62
     
     # Weighted average: FCF (25%), ROE (25%), Profit Margin (20%), Gross Margin (15%), Growth (10%), Debt (5%)
     firm_score = (
@@ -298,30 +300,32 @@ def compute_topdown_score(
 ) -> Dict:
     """
     Compute Top-Down Mission-Fit Score using country macro and SWOT.
-    Favors developed markets with institutional strength, rule of law, capital markets.
+    Favors developed markets AND large emerging markets.
     Returns dict with component scores and final topdown_score (0-100).
     """
     gdp_growth = country_meta.get("gdp_growth", 2.0)
     gdp_per_capita = country_meta.get("gdp_per_capita", 20000)
     gdp_billions = country_meta.get("gdp_billions", 500)  # Use economic scale
     
-    # GDP per capita score (higher = more stable, mature market) - 40% weight
-    gdp_pc_score = normalize(gdp_per_capita, 1000, 100000, invert=False)
+    # GDP per capita score (higher = more stable, mature market) - 45% weight
+    # Developed markets all score well: US 81k, Japan 34k, Germany 53k, Australia 65k
+    # Map: $5k→ 0%, $65k→100% (covers most developed + upper-middle income)
+    gdp_pc_score = normalize(gdp_per_capita, 5000, 65000, invert=False)
     
-    # Economic scale score (larger economies = more diversified, institutional) - 40% weight
-    # Favors US ($25T), Japan ($4T), Germany ($5T) over small economies
-    scale_score = normalize(gdp_billions, 100, 30000, invert=False)
+    # Economic scale score (larger economies = more diversified, institutions) - 35% weight
+    # Map: $500B→0%, $20T→100% (US is 27T, so gets ~135, capped at 100)
+    scale_score = normalize(gdp_billions, 500, 20000, invert=False)
     
     # GDP growth score (higher = better opportunity) - 15% weight
-    # De-emphasize growth since high-growth small economies lack stability
     growth_score = normalize(gdp_growth, -2, 8, invert=False)
     
     # SWOT score: net strength-weakness + opportunity-threat - 5% weight
     swot_net = (swot_strength - swot_weakness) + (swot_opportunity - swot_threat)
     swot_score = normalize(swot_net, -8, 8, invert=False)
     
-    # Combine: 40% GDP per capita (stability), 40% economic scale (institutions/diversification), 15% growth, 5% SWOT
-    topdown_score = 0.40 * gdp_pc_score + 0.40 * scale_score + 0.15 * growth_score + 0.05 * swot_score
+    # Combine: 45% GDP per capita (stability), 35% economic scale (size/institutions), 15% growth, 5% SWOT
+    # This balances developed-world stability with EM growth + size benefits
+    topdown_score = 0.45 * gdp_pc_score + 0.35 * scale_score + 0.15 * growth_score + 0.05 * swot_score
     
     return {
         "topdown_score": round(topdown_score, 2),
@@ -378,16 +382,17 @@ def compute_prism_score(
     )
     topdown_score = topdown["topdown_score"]
     
-    # Combine with optimized weights for global portfolio:
-    # Top-Down (30%) - favors developed markets with institutional strength, also supports EM macro
-    # Structural (35%) - consistent Porter/lifecycle analysis across all countries
-    # Fundamentals (20%) - data quality varies, defaults to 55 for intl stocks
-    # Behavior (15%) - recent performance, less noisy at this weight
+    # Combine with weights optimized for global diversified portfolio:
+    # This weighting favors markets where your portfolio is heavily invested:
+    # Fundamentals (40%) - defaults to 62 for international markets, rewards quality firms
+    # Structural (35%) - consistent analysis across sectors/countries
+    # Top-Down (20%) - country macro, but de-emphasized since many markets lack depth
+    # Behavior (5%) - recent performance, least important for long-term diversified portfolio
     prism_score = (
-        0.30 * topdown_score +
+        0.40 * fundamentals_score +
         0.35 * structural_score +
-        0.20 * fundamentals_score +
-        0.15 * behavior_score
+        0.20 * topdown_score +
+        0.05 * behavior_score
     )
     
     return {

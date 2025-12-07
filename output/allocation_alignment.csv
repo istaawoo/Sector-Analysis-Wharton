@@ -1,52 +1,52 @@
 ticker,country,sector,amount,prism_score,alignment_score,tier
-MSFT,US,Information Technology,20000.0,55.69,55.69,Neutral
-NVDA,US,Information Technology,20000.0,55.69,55.69,Neutral
-AAPL,US,Information Technology,15000.0,55.69,55.69,Neutral
-META,US,Communication Services,10000.0,65.25,65.25,Neutral
-GOOG,US,Communication Services,10000.0,65.25,65.25,Neutral
-AVGO,US,Information Technology,10000.0,55.69,55.69,Neutral
-COST,US,Consumer Staples,10000.0,57.61,57.61,Neutral
-LLY,US,Health Care,10000.0,58.7,58.7,Neutral
-JPM,US,Financials,10000.0,55.06,55.06,Neutral
-TSM,TW,Information Technology,10000.0,46.8,46.8,Underweight
-PLTR,US,Information Technology,20000.0,55.69,55.69,Neutral
-RGTI,US,Information Technology,7500.0,55.69,55.69,Neutral
-QQQ,US,Information Technology,30000.0,55.69,55.69,Neutral
+MSFT,US,Information Technology,20000.0,59.0,59.0,Neutral
+NVDA,US,Information Technology,20000.0,59.0,59.0,Neutral
+AAPL,US,Information Technology,15000.0,59.0,59.0,Neutral
+META,US,Communication Services,10000.0,65.34,65.34,Neutral
+GOOG,US,Communication Services,10000.0,65.34,65.34,Neutral
+AVGO,US,Information Technology,10000.0,59.0,59.0,Neutral
+COST,US,Consumer Staples,10000.0,56.45,56.45,Neutral
+LLY,US,Health Care,10000.0,60.81,60.81,Neutral
+JPM,US,Financials,10000.0,55.7,55.7,Neutral
+TSM,TW,Information Technology,10000.0,44.9,44.9,Underweight
+PLTR,US,Information Technology,20000.0,59.0,59.0,Neutral
+RGTI,US,Information Technology,7500.0,59.0,59.0,Neutral
+QQQ,US,Information Technology,30000.0,59.0,59.0,Neutral
 VTI,US,Diversified,20000.0,,50.0,Not Scored
 VTV,US,Diversified,12500.0,,50.0,Not Scored
-SAP,DE,Information Technology,5000.0,50.96,50.96,Underweight
-ALV.DE,DE,Financials,4000.0,48.17,48.17,Underweight
-RHM.DE,DE,Industrials,3750.0,49.17,49.17,Underweight
-MC.PA,FR,Consumer Discretionary,4000.0,47.59,47.59,Underweight
-TTE.PA,FR,Energy,3000.0,47.66,47.66,Underweight
-AI.PA,FR,Materials,3625.0,48.6,48.6,Underweight
-8035.T,JP,Information Technology,8000.0,49.02,49.02,Underweight
-6758.T,JP,Consumer Discretionary,6500.0,45.09,45.09,Underweight
-9983.T,JP,Consumer Discretionary,5000.0,45.09,45.09,Underweight
-8058.T,JP,Industrials,4000.0,43.82,43.82,Underweight
-5803.T,JP,Information Technology,3062.5,49.02,49.02,Underweight
-GMG.AX,AU,Real Estate,3000.0,52.11,52.11,Underweight
-PME.AX,AU,Health Care,2000.0,56.77,56.77,Neutral
-NWH.AX,AU,Industrials,1750.0,47.24,47.24,Underweight
-ASB.AX,AU,Industrials,1750.0,47.24,47.24,Underweight
+SAP,DE,Information Technology,5000.0,48.91,48.91,Underweight
+ALV.DE,DE,Financials,4000.0,44.69,44.69,Underweight
+RHM.DE,DE,Industrials,3750.0,45.94,45.94,Underweight
+MC.PA,FR,Consumer Discretionary,4000.0,46.36,46.36,Underweight
+TTE.PA,FR,Energy,3000.0,45.73,45.73,Underweight
+AI.PA,FR,Materials,3625.0,45.09,45.09,Underweight
+8035.T,JP,Information Technology,8000.0,45.19,45.19,Underweight
+6758.T,JP,Consumer Discretionary,6500.0,41.36,41.36,Underweight
+9983.T,JP,Consumer Discretionary,5000.0,41.36,41.36,Underweight
+8058.T,JP,Industrials,4000.0,37.91,37.91,Underweight
+5803.T,JP,Information Technology,3062.5,45.19,45.19,Underweight
+GMG.AX,AU,Real Estate,3000.0,50.89,50.89,Underweight
+PME.AX,AU,Health Care,2000.0,57.72,57.72,Neutral
+NWH.AX,AU,Industrials,1750.0,42.24,42.24,Underweight
+ASB.AX,AU,Industrials,1750.0,42.24,42.24,Underweight
 EWU,GB,Diversified,21250.0,,50.0,Not Scored
 EWC,CA,Diversified,10625.0,,50.0,Not Scored
 FEZ,EU,Diversified,15937.5,,50.0,Not Scored
-TCEHY,CN,Communication Services,5000.0,49.87,49.87,Underweight
-BABA,CN,Consumer Discretionary,5000.0,44.66,44.66,Underweight
-JD,CN,Consumer Discretionary,4000.0,44.66,44.66,Underweight
-PDD,CN,Consumer Discretionary,5000.0,44.66,44.66,Underweight
-1211.HK,CN,Consumer Discretionary,3500.0,44.66,44.66,Underweight
-INCO.JK,ID,Materials,2000.0,39.74,39.74,Underweight
-TLKM.JK,ID,Communication Services,2000.0,49.84,49.84,Underweight
-ARTO.JK,ID,Financials,2000.0,38.79,38.79,Underweight
-KLBF.JK,ID,Health Care,1500.0,43.82,43.82,Underweight
-JSMR.JK,ID,Industrials,2062.5,39.0,39.0,Underweight
-005930.KS,KR,Information Technology,2000.0,53.54,53.54,Underweight
-000660.KS,KR,Information Technology,1500.0,53.54,53.54,Underweight
-005380.KS,KR,Consumer Discretionary,1000.0,45.05,45.05,Underweight
-035420.KS,KR,Communication Services,1000.0,46.93,46.93,Underweight
-035720.KS,KR,Communication Services,875.0,46.93,46.93,Underweight
+TCEHY,CN,Communication Services,5000.0,48.99,48.99,Underweight
+BABA,CN,Consumer Discretionary,5000.0,39.97,39.97,Underweight
+JD,CN,Consumer Discretionary,4000.0,39.97,39.97,Underweight
+PDD,CN,Consumer Discretionary,5000.0,39.97,39.97,Underweight
+1211.HK,CN,Consumer Discretionary,3500.0,39.97,39.97,Underweight
+INCO.JK,ID,Materials,2000.0,33.91,33.91,Underweight
+TLKM.JK,ID,Communication Services,2000.0,47.34,47.34,Underweight
+ARTO.JK,ID,Financials,2000.0,35.77,35.77,Underweight
+KLBF.JK,ID,Health Care,1500.0,40.58,40.58,Underweight
+JSMR.JK,ID,Industrials,2062.5,33.94,33.94,Underweight
+005930.KS,KR,Information Technology,2000.0,48.34,48.34,Underweight
+000660.KS,KR,Information Technology,1500.0,48.34,48.34,Underweight
+005380.KS,KR,Consumer Discretionary,1000.0,39.85,39.85,Underweight
+035420.KS,KR,Communication Services,1000.0,43.55,43.55,Underweight
+035720.KS,KR,Communication Services,875.0,43.55,43.55,Underweight
 INDA,IN,Diversified,19125.0,,50.0,Not Scored
 EWZ,BR,Diversified,12750.0,,50.0,Not Scored
 EWW,MX,Diversified,6375.0,,50.0,Not Scored

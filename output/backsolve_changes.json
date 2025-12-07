@@ -1,6 +1,13 @@
 {
-  "adjustments_needed": false,
-  "current_median": 49.02,
-  "target_score": 47.06,
-  "message": "Allocations are well-aligned with PRISM rankings. No parameter adjustments needed."
+  "adjustments_needed": true,
+  "current_median": 45.73,
+  "target_score": 45.88,
+  "gap": 0.15,
+  "suggested_weights": {
+    "structural": 0.35,
+    "fundamentals": 0.33,
+    "behavior": 0.17,
+    "topdown": 0.15
+  },
+  "message": "To better justify allocations, consider adjusting PRISM weights. Increasing Fundamentals weight to 33% and reducing Behavior weight to 17% may improve alignment."
 }
